@@ -2,14 +2,18 @@
 -- See Hoogle, http://www.haskell.org/hoogle/
 
 
--- | Short description of your package
+-- | Advent of Code 2017 - my answers
 --   
 --   Please see the README on Github at
 --   <a>https://github.com/ephemient/aoc2017#readme</a>
 @package aoc2017
 @version 0.1.0.0
 
+
 module Day1
+
+-- | The <a>digits</a> function returns a list of digits contained in a
+--   string.
 digits :: String -> [Int]
 day1a :: String -> Int
 day1b :: String -> Int
