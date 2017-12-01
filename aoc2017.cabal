@@ -1,6 +1,6 @@
 name:                aoc2017
 version:             0.1.0.0
-synopsis:            Short description of your package
+synopsis:            Advent of Code 2017 - my answers
 homepage:            https://github.com/ephemient/aoc2017#readme
 license:             BSD3
 license-file:        LICENSE
@@ -21,16 +21,15 @@ description:         Please see the README on Github at <https://github.com/ephe
 library
   hs-source-dirs:      src
   exposed-modules:     Day1
-  ghc-options:         -pgmL markdown-unlit
   build-depends:       base >= 4.7 && < 5
-                     , markdown-unlit
   default-language:    Haskell2010
 
 executable aoc2017-exe
   hs-source-dirs:      app
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  main-is:             Main.lhs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -pgmL markdown-unlit
   build-depends:       base
+                     , markdown-unlit
                      , aoc2017
   other-modules:       Paths_aoc2017
   default-language:    Haskell2010
