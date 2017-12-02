@@ -8,6 +8,10 @@ module Main (main) where
 ~~~ {.haskell}
 import Day1 (day1a, day1b)
 ~~~
+## [Day 2: Corruption Checksum](/src/Day2.hs)
+~~~ {.haskell}
+import Day2 (day2a, day2b)
+~~~
 <!--
 ~~~ {.haskell}
 import Paths_aoc2017 (getDataFileName)
@@ -27,4 +31,5 @@ run i funcs = do
 main :: IO ()
 main = do
     run 1 [show . day1a, show . day1b]
+    run 2 [show . day2a, show . day2b]
 ~~~
