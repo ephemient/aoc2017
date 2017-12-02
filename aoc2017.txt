@@ -17,3 +17,12 @@ module Day1
 digits :: String -> [Int]
 day1a :: String -> Int
 day1b :: String -> Int
+
+
+module Day2
+
+-- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
+--   columns.
+readSpreadsheet :: String -> [[Int]]
+day2a :: String -> Int
+day2b :: String -> Int
