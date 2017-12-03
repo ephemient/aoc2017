@@ -26,3 +26,8 @@ module Day2
 readSpreadsheet :: String -> [[Int]]
 day2a :: String -> Int
 day2b :: String -> Int
+
+
+module Day3
+day3a :: String -> Int
+day3b :: String -> Int
