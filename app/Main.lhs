@@ -12,7 +12,13 @@ import Day1 (day1a, day1b)
 ~~~ {.haskell}
 import Day2 (day2a, day2b)
 ~~~
-<!--
+## [Day 3: Spiral Memory](/src/Day3.hs)
+~~~ {.haskell}
+import Day3 (day3a, day3b)
+~~~
+
+---
+
 ~~~ {.haskell}
 import Paths_aoc2017 (getDataFileName)
 
@@ -22,14 +28,10 @@ run i funcs = do
     contents <- getDataFileName ("day" ++ show i ++ ".txt") >>= readFile
     mapM_ (putStrLn . ($ contents)) funcs
     putStrLn ""
-~~~
--->
 
----
-
-~~~ {.haskell}
 main :: IO ()
 main = do
     run 1 [show . day1a, show . day1b]
     run 2 [show . day2a, show . day2b]
+    run 3 [show . day3a, show . day3b]
 ~~~
