@@ -22,16 +22,22 @@ import Day3 (day3a, day3b)
 ~~~ {.haskell}
 import Paths_aoc2017 (getDataFileName)
 
-run :: Int -> [String -> String] -> IO ()
-run i funcs = do
+getDayInput :: Int -> IO String
+getDayInput i = do
     putStrLn $ "Day " ++ show i
-    contents <- getDataFileName ("day" ++ show i ++ ".txt") >>= readFile
-    mapM_ (putStrLn . ($ contents)) funcs
+    getDataFileName ("day" ++ show i ++ ".txt") >>= readFile
+
+readDayInput :: (Read a) => Int -> IO a
+readDayInput = fmap read . getDayInput
+
+run :: (b -> IO ()) -> [a -> b] -> a -> IO ()
+run showIO funcs contents = do
+    mapM_ (showIO . ($ contents)) funcs
     putStrLn ""
 
 main :: IO ()
 main = do
-    run 1 [show . day1a, show . day1b]
-    run 2 [show . day2a, show . day2b]
-    run 3 [show . day3a, show . day3b]
+    getDayInput 1 >>= run print [day1a, day1b]
+    getDayInput 2 >>= run print [day2a, day2b]
+    readDayInput 3 >>= run print [day3a, day3b]
 ~~~
