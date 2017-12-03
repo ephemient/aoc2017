@@ -29,5 +29,5 @@ day2b :: String -> Int
 
 
 module Day3
-day3a :: String -> Int
-day3b :: String -> Int
+day3a :: Int -> Int
+day3b :: Int -> Int
