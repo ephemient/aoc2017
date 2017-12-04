@@ -31,3 +31,12 @@ day2b :: String -> Int
 module Day3
 day3a :: Int -> Int
 day3b :: Int -> Int
+
+
+module Day4
+
+-- | The <a>allUnique</a> function returns whether the list has no
+--   duplicates.
+allUnique :: (Eq a) => [a] -> Bool
+day4a :: String -> Int
+day4b :: String -> Int
