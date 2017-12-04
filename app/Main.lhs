@@ -16,6 +16,10 @@ import Day2 (day2a, day2b)
 ~~~ {.haskell}
 import Day3 (day3a, day3b)
 ~~~
+## [Day 4: High-Entropy Passphrases](/src/Day4.hs)
+~~~ {.haskell}
+import Day4 (day4a, day4b)
+~~~
 
 ---
 
@@ -40,4 +44,5 @@ main = do
     getDayInput 1 >>= run print [day1a, day1b]
     getDayInput 2 >>= run print [day2a, day2b]
     readDayInput 3 >>= run print [day3a, day3b]
+    getDayInput 4 >>= run print [day4a, day4b]
 ~~~
