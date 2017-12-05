@@ -40,3 +40,11 @@ module Day4
 allUnique :: (Eq a) => [a] -> Bool
 day4a :: String -> Int
 day4b :: String -> Int
+
+
+module Day5
+
+-- | At each step, the current item is used as a relative index shift.
+steps :: (Int -> Int) -> [Int] -> Int
+day5a :: String -> Int
+day5b :: String -> Int
