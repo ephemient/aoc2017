@@ -20,6 +20,10 @@ import Day3 (day3a, day3b)
 ~~~ {.haskell}
 import Day4 (day4a, day4b)
 ~~~
+## [Day 5: A Maze of Twisty Trampolines, All Alike](/src/Day5.hs)
+~~~ {.haskell}
+import Day5 (day5a, day5b)
+~~~
 
 ---
 
@@ -45,4 +49,5 @@ main = do
     getDayInput 2 >>= run print [day2a, day2b]
     readDayInput 3 >>= run print [day3a, day3b]
     getDayInput 4 >>= run print [day4a, day4b]
+    getDayInput 5 >>= run print [day5a, day5b]
 ~~~
