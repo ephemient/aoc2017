@@ -24,6 +24,10 @@ import Day4 (day4a, day4b)
 ~~~ {.haskell}
 import Day5 (day5a, day5b)
 ~~~
+## [Day 6: Memory Reallocation](/src/Day6.hs)
+~~~ {.haskell}
+import Day6 (day6a, day6b)
+~~~
 
 ---
 
@@ -50,4 +54,5 @@ main = do
     readDayInput 3 >>= run print [day3a, day3b]
     getDayInput 4 >>= run print [day4a, day4b]
     getDayInput 5 >>= run print [day5a, day5b]
+    getDayInput 6 >>= run print [day6a, day6b]
 ~~~
