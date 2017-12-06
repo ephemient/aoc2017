@@ -8,7 +8,8 @@ module Day6 (day6a, day6b) where
 
 import Control.Arrow (second)
 import Control.Monad (ap)
-import Data.Array.IArray (Array, IArray, array, assocs, bounds, listArray)
+import Data.Array.IArray (IArray, array, assocs, bounds, listArray)
+import Data.Array.Unboxed (UArray)
 import Data.Ix (Ix, index, rangeSize)
 import Data.List (find, genericLength, genericSplitAt, inits, maximumBy)
 import Data.Maybe (fromJust)
@@ -42,7 +43,7 @@ findCycle :: (Eq a) => [a] -> Maybe [a]
 findCycle = find (not . null) . ap (zipWith $ dropWhile . (/=)) inits
 
 day6a :: String -> Int
-day6a = length . takeUnique . iterate redistribute . parse @Array
+day6a = length . takeUnique . iterate redistribute . parse @UArray @Int
 
 day6b :: String -> Int
-day6b = length . fromJust . findCycle . iterate redistribute . parse @Array
+day6b = length . fromJust . findCycle . iterate redistribute . parse @UArray @Int
