@@ -48,3 +48,25 @@ module Day5
 steps :: (Int -> Int) -> [Int] -> Int
 day5a :: String -> Int
 day5b :: String -> Int
+
+
+module Day6
+
+-- | Reads the words of a string to an array.
+parse :: (IArray a e, Ix i, Num i, Read e) => String -> a i e
+
+-- | Returns the index and value of first maximum in an array.
+top :: (IArray a e, Ix i, Ord e) => a i e -> (i, e)
+
+-- | Removes the first maximum and redistributes its value throughout the
+--   array.
+redistribute :: (IArray a i, Integral i, Ix i) => a i i -> a i i
+
+-- | The longest initial sublist with no duplicates.
+takeUnique :: (Eq a) => [a] -> [a]
+
+-- | The first sublist <i>[a, b, ..]</i> which is immediately followed by
+--   <i>a</i>.
+findCycle :: (Eq a) => [a] -> Maybe [a]
+day6a :: String -> Int
+day6b :: String -> Int
