@@ -62,11 +62,7 @@ top :: (IArray a e, Ix i, Ord e) => a i e -> (i, e)
 --   array.
 redistribute :: (IArray a i, Integral i, Ix i) => a i i -> a i i
 
--- | The longest initial sublist with no duplicates.
-takeUnique :: (Eq a) => [a] -> [a]
-
--- | The first sublist <i>[a, b, ..]</i> which is immediately followed by
---   <i>a</i>.
-findCycle :: (Eq a) => [a] -> Maybe [a]
-day6a :: String -> Int
-day6b :: String -> Int
+-- | The indices of the first two duplicated elements in a list.
+indexDup :: (Ord a) => [a] -> Maybe (Int, Int)
+day6a :: String -> Maybe Int
+day6b :: String -> Maybe Int
