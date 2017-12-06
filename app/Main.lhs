@@ -42,6 +42,9 @@ getDayInput i = do
 readDayInput :: (Read a) => Int -> IO a
 readDayInput = fmap read . getDayInput
 
+printMaybe :: (Show a) => Maybe a -> IO ()
+printMaybe = maybe (putStrLn "(⊥)") print
+
 run :: (b -> IO ()) -> [a -> b] -> a -> IO ()
 run showIO funcs contents = do
     mapM_ (showIO . ($ contents)) funcs
@@ -54,5 +57,5 @@ main = do
     readDayInput 3 >>= run print [day3a, day3b]
     getDayInput 4 >>= run print [day4a, day4b]
     getDayInput 5 >>= run print [day5a, day5b]
-    getDayInput 6 >>= run print [day6a, day6b]
+    getDayInput 6 >>= run printMaybe [day6a, day6b]
 ~~~

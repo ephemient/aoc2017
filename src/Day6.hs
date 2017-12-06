@@ -7,12 +7,13 @@ Description:    <http://adventofcode.com/2017/day/6 Day 6: Memory Reallocation>
 module Day6 (day6a, day6b) where
 
 import Control.Arrow (second)
-import Control.Monad (ap)
+import Control.Monad (msum)
 import Data.Array.IArray (IArray, array, assocs, bounds, listArray)
 import Data.Array.Unboxed (UArray)
 import Data.Ix (Ix, index, rangeSize)
-import Data.List (find, genericLength, genericSplitAt, inits, maximumBy)
-import Data.Maybe (fromJust)
+import Data.List (genericLength, genericSplitAt, maximumBy)
+import qualified Data.Map.Strict as Map (empty, insert, lookup)
+import Data.Maybe (catMaybes, listToMaybe)
 import Data.Ord (Down(Down), comparing)
 import Data.Tuple (swap)
 
@@ -34,16 +35,13 @@ redistribute arr =
         (up, down) = genericSplitAt r $ after ++ before ++ [(i, 0)]
     in array b $ map (second (q + 1 +)) up ++ map (second (q +)) down
 
--- | The longest initial sublist with no duplicates.
-takeUnique :: (Eq a) => [a] -> [a]
-takeUnique = map fst . takeWhile (not . uncurry elem) . ap zip inits
+-- | The indices of the first two duplicated elements in a list.
+indexDup :: (Ord a) => [a] -> Maybe (Int, Int)
+indexDup l = msum . zipWith (fmap . (,)) [0..] . zipWith Map.lookup l .
+             scanl (flip ($)) Map.empty $ zipWith Map.insert l [0..]
 
--- | The first sublist /[a, b, ..]/ which is immediately followed by /a/.
-findCycle :: (Eq a) => [a] -> Maybe [a]
-findCycle = find (not . null) . ap (zipWith $ dropWhile . (/=)) inits
+day6a :: String -> Maybe Int
+day6a = fmap fst . indexDup . iterate redistribute . parse @UArray @Int
 
-day6a :: String -> Int
-day6a = length . takeUnique . iterate redistribute . parse @UArray @Int
-
-day6b :: String -> Int
-day6b = length . fromJust . findCycle . iterate redistribute . parse @UArray @Int
+day6b :: String -> Maybe Int
+day6b = fmap (uncurry (-)) . indexDup . iterate redistribute . parse @UArray @Int
