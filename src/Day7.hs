@@ -36,7 +36,7 @@ findRoot :: (Ord a) => [(a, (b, [a]))] -> Maybe a
 findRoot = Set.lookupMin . uncurry Set.difference .
            (Set.fromList *** Set.unions . map (Set.fromList . snd)) . unzip
 
--- | Returns the most common value and entries whose values do not match.
+-- | Returns the most common element.
 mode :: (Eq a) => [a] -> Maybe a
 mode [] = Nothing
 mode x = listToMaybe . maximumBy (comparing length) $ group x
@@ -44,7 +44,7 @@ mode x = listToMaybe . maximumBy (comparing length) $ group x
 -- | Returns the total weight of the tree rooted at the given node.
 --
 -- As a side effect, also 'tell' the corrected weight for nodes whose tree
--- weight does not equal their siblings'.
+-- weight does not equal the majority of their siblings'.
 weighTree :: (Monad m, MonadWriter [b] m, Ord a, Eq b, Num b) =>
     Map.Map a (b, [a]) -> a -> m b
 weighTree tree root = do
