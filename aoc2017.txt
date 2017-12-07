@@ -83,6 +83,6 @@ findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
 --   
 --   As a side effect, also <a>tell</a> the corrected weight for nodes
 --   whose tree weight does not equal their siblings'.
-weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Eq a, Eq b, Num b) => [(a, (b, [a]))] -> a -> m (a, b)
+weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Ord a, Eq b, Num b) => Map a (b, [a]) -> a -> m (a, b)
 day7a :: String -> Maybe String
 day7b :: String -> Maybe Int
