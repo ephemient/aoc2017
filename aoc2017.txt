@@ -74,7 +74,7 @@ module Day7
 parseTree :: String -> Maybe [(String, (Int, [String]))]
 
 -- | Finds a node with no parents.
-findRoot :: (Eq a) => [(a, (b, [a]))] -> Maybe a
+findRoot :: (Ord a) => [(a, (b, [a]))] -> Maybe a
 
 -- | Returns the most common value and entries whose values do not match.
 findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
