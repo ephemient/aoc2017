@@ -77,12 +77,12 @@ parseTree :: String -> Maybe [(String, (Int, [String]))]
 findRoot :: (Ord a) => [(a, (b, [a]))] -> Maybe a
 
 -- | Returns the most common value and entries whose values do not match.
-findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
+mode :: (Eq a) => [a] -> Maybe a
 
 -- | Returns the total weight of the tree rooted at the given node.
 --   
 --   As a side effect, also <a>tell</a> the corrected weight for nodes
 --   whose tree weight does not equal their siblings'.
-weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Ord a, Eq b, Num b) => Map a (b, [a]) -> a -> m (a, b)
+weighTree :: (Monad m, MonadWriter [b] m, Ord a, Eq b, Num b) => Map a (b, [a]) -> a -> m b
 day7a :: String -> Maybe String
 day7b :: String -> Maybe Int
