@@ -14,6 +14,7 @@ import Data.Char (isAlphaNum)
 import Data.Function (on)
 import Data.Functor (($>))
 import Data.List ((\\), find,groupBy, maximumBy)
+import qualified Data.Map.Strict as Map (Map, fromList, lookup)
 import Data.Maybe (listToMaybe)
 import Data.Ord (comparing)
 import Text.ParserCombinators.ReadP (char, eof, many1, option, readP_to_S, readS_to_P, satisfy, sepBy1, skipSpaces, string)
@@ -47,15 +48,15 @@ findUnbalanced weights
 --
 -- As a side effect, also 'tell' the corrected weight for nodes whose tree
 -- weight does not equal their siblings'.
-weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Eq a, Eq b, Num b) =>
-    [(a, (b, [a]))] -> a -> m (a, b)
+weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Ord a, Eq b, Num b) =>
+    Map.Map a (b, [a]) -> a -> m (a, b)
 weighTree tree root = do
-    let Just (weight, children) = lookup root tree
+    let Just (weight, children) = Map.lookup root tree
     childWeights <- mapM (weighTree tree) children
     let unbalanced = findUnbalanced childWeights
     forM_ unbalanced $ \(targetWeight, badChildren) ->
         forM_ badChildren $ \(child, actualWeight) -> do
-            let Just (childWeight, _) = lookup child tree
+            let Just (childWeight, _) = Map.lookup child tree
             tell [(child, childWeight + targetWeight - actualWeight)]
     pure (root, weight + sum (map snd childWeights))
 
@@ -66,4 +67,5 @@ day7b :: String -> Maybe Int
 day7b input = do
     tree <- parseTree input
     root <- findRoot tree
-    join $ listToMaybe . map snd <$> execWriterT (weighTree tree root)
+    join $ listToMaybe . map snd <$>
+           execWriterT (weighTree (Map.fromList tree) root)
