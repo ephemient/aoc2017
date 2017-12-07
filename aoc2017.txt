@@ -71,7 +71,7 @@ day6b :: String -> Maybe Int
 module Day7
 
 -- | Parses a string as a table of node name to node weight and children.
-parseTree :: (MonadFail m) => String -> m [(String, (Int, [String]))]
+parseTree :: String -> Maybe [(String, (Int, [String]))]
 
 -- | Finds a node with no parents.
 findRoot :: (Eq a) => [(a, (b, [a]))] -> Maybe a
