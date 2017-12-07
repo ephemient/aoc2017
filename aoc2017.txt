@@ -76,13 +76,13 @@ parseTree :: String -> Maybe [(String, (Int, [String]))]
 -- | Finds a node with no parents.
 findRoot :: (Ord a) => [(a, (b, [a]))] -> Maybe a
 
--- | Returns the most common value and entries whose values do not match.
+-- | Returns the most common element.
 mode :: (Eq a) => [a] -> Maybe a
 
 -- | Returns the total weight of the tree rooted at the given node.
 --   
 --   As a side effect, also <a>tell</a> the corrected weight for nodes
---   whose tree weight does not equal their siblings'.
+--   whose tree weight does not equal the majority of their siblings'.
 weighTree :: (Monad m, MonadWriter [b] m, Ord a, Eq b, Num b) => Map a (b, [a]) -> a -> m b
 day7a :: String -> Maybe String
 day7b :: String -> Maybe Int
