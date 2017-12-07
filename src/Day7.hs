@@ -2,18 +2,16 @@
 Module:         Day7
 Description:    <http://adventofcode.com/2017/day/7 Day 7: Recursive Circus>
 -}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts, PatternGuards #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day7 (day7a, day7b) where
 
-import Control.Arrow ((***), second)
-import Control.Monad ((>=>), forM_, join)
-import Control.Monad.Fail (MonadFail)
+import Control.Arrow ((***))
+import Control.Monad ((>=>), guard, join, zipWithM_)
 import Control.Monad.Writer (MonadWriter, execWriterT, tell)
 import Data.Char (isAlphaNum)
-import Data.Function (on)
 import Data.Functor (($>))
-import Data.List ((\\), find,groupBy, maximumBy)
+import Data.List (find, group, maximumBy)
 import qualified Data.Map.Strict as Map (Map, fromList, lookup)
 import Data.Maybe (listToMaybe)
 import Data.Ord (comparing)
@@ -39,28 +37,26 @@ findRoot = Set.lookupMin . uncurry Set.difference .
            (Set.fromList *** Set.unions . map (Set.fromList . snd)) . unzip
 
 -- | Returns the most common value and entries whose values do not match.
-findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
-findUnbalanced weights
-  | groups@(_:_:_) <- groupBy ((==) `on` snd) weights
-  , (_, goal):_ <- maximumBy (comparing length) groups
-  = Just (goal, filter ((/= goal) . snd) weights)
-  | otherwise = Nothing
+mode :: (Eq a) => [a] -> Maybe a
+mode [] = Nothing
+mode x = listToMaybe . maximumBy (comparing length) $ group x
 
 -- | Returns the total weight of the tree rooted at the given node.
 --
 -- As a side effect, also 'tell' the corrected weight for nodes whose tree
 -- weight does not equal their siblings'.
-weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Ord a, Eq b, Num b) =>
-    Map.Map a (b, [a]) -> a -> m (a, b)
+weighTree :: (Monad m, MonadWriter [b] m, Ord a, Eq b, Num b) =>
+    Map.Map a (b, [a]) -> a -> m b
 weighTree tree root = do
     let Just (weight, children) = Map.lookup root tree
     childWeights <- mapM (weighTree tree) children
-    let unbalanced = findUnbalanced childWeights
-    forM_ unbalanced $ \(targetWeight, badChildren) ->
-        forM_ badChildren $ \(child, actualWeight) -> do
-            let Just (childWeight, _) = Map.lookup child tree
-            tell [(child, childWeight + targetWeight - actualWeight)]
-    pure (root, weight + sum (map snd childWeights))
+    let Just targetWeight = mode childWeights
+        check child actualWeight
+          | actualWeight == targetWeight = pure ()
+          | Just (childWeight, _) <- Map.lookup child tree
+          = tell [childWeight + targetWeight - actualWeight]
+    zipWithM_ check children childWeights
+    pure $ weight + sum childWeights
 
 day7a :: String -> Maybe String
 day7a = parseTree >=> findRoot
@@ -69,5 +65,4 @@ day7b :: String -> Maybe Int
 day7b input = do
     tree <- parseTree input
     root <- findRoot tree
-    join $ listToMaybe . map snd <$>
-           execWriterT (weighTree (Map.fromList tree) root)
+    join $ listToMaybe <$> execWriterT (weighTree (Map.fromList tree) root)
