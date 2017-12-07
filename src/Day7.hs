@@ -42,22 +42,21 @@ findUnbalanced weights
   = Just (goal, filter ((/= goal) . snd) weights)
   | otherwise = Nothing
 
--- | Returns a table of node name to tree weight, rooted at the given node.
+-- | Returns the total weight of the tree rooted at the given node.
+--
 -- As a side effect, also 'tell' the corrected weight for nodes whose tree
 -- weight does not equal their siblings'.
-weighChildren :: (MonadFail m, MonadWriter [(a, b)] m, Eq a, Eq b, Num b) =>
-    [(a, (b, [a]))] -> a -> m [(a, b)]
-weighChildren tree root = do
+weighTree :: (MonadFail m, MonadWriter [(a, b)] m, Eq a, Eq b, Num b) =>
+    [(a, (b, [a]))] -> a -> m (a, b)
+weighTree tree root = do
     let Just (weight, children) = lookup root tree
-    weights <- mapM (weighChildren tree) children
-    let childWeights = map head weights
-        allWeights = concat weights
-        unbalanced = findUnbalanced childWeights
+    childWeights <- mapM (weighTree tree) children
+    let unbalanced = findUnbalanced childWeights
     forM_ unbalanced $ \(targetWeight, badChildren) ->
         forM_ badChildren $ \(child, actualWeight) -> do
             let Just (childWeight, _) = lookup child tree
             tell [(child, childWeight + targetWeight - actualWeight)]
-    pure $ (root, weight + sum (map snd childWeights)) : allWeights
+    pure (root, weight + sum (map snd childWeights))
 
 day7a :: String -> Maybe String
 day7a = parseTree >=> findRoot
@@ -66,4 +65,4 @@ day7b :: String -> Maybe Int
 day7b input = do
     tree <- parseTree input
     root <- findRoot tree
-    join $ listToMaybe . map snd <$> execWriterT (weighChildren tree root)
+    join $ listToMaybe . map snd <$> execWriterT (weighTree tree root)
