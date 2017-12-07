@@ -8,27 +8,28 @@ module Day7 (day7a, day7b) where
 
 import Control.Arrow (second)
 import Control.Monad ((>=>), forM_, join)
-import Control.Monad.Fail (MonadFail, fail)
+import Control.Monad.Fail (MonadFail)
 import Control.Monad.Writer (MonadWriter, execWriterT, tell)
+import Data.Char (isAlphaNum)
 import Data.Function (on)
-import Data.List ((\\), groupBy, maximumBy)
+import Data.Functor (($>))
+import Data.List ((\\), find,groupBy, maximumBy)
 import Data.Maybe (listToMaybe)
 import Data.Ord (comparing)
-import Prelude hiding (fail)
-import Text.Parsec (ParseError, ParsecT, eof, many1, option, parse, sepBy, sepEndBy)
-import Text.Parsec.Char (alphaNum, char, digit, newline, string)
+import Text.ParserCombinators.ReadP (char, eof, many1, option, readP_to_S, readS_to_P, satisfy, sepBy1, skipSpaces, string)
 
 -- | Parses a string as a table of node name to node weight and children.
-parseTree :: (MonadFail m) => String -> m [(String, (Int, [String]))]
-parseTree = either (fail . show) pure . parse (sepEndBy line newline <* eof) ""
-  where
-    line = do
-        n <- many1 alphaNum
-        string " ("
-        w <- read <$> many1 digit
-        char ')'
-        c <- option [] $ string " -> " *> sepBy (many1 alphaNum) (string ", ")
-        return (n, (w, c))
+parseTree :: String -> Maybe [(String, (Int, [String]))]
+parseTree = mapM (fmap fst . find (null . snd) . readsLine) . lines where
+    readsLine = readP_to_S $ do
+        name <- many1 $ satisfy isAlphaNum
+        skipSpaces; char '('
+        weight <- readS_to_P reads
+        char ')'; skipSpaces
+        children <- option [] $ do
+            string "->"; skipSpaces
+            sepBy1 (many1 $ satisfy isAlphaNum) (char ',' >> skipSpaces)
+        eof $> (name, (weight, children))
 
 -- | Finds a node with no parents.
 findRoot :: (Eq a) => [(a, (b, [a]))] -> Maybe a
