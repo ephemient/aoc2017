@@ -6,7 +6,7 @@ Description:    <http://adventofcode.com/2017/day/7 Day 7: Recursive Circus>
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day7 (day7a, day7b) where
 
-import Control.Arrow (second)
+import Control.Arrow ((***), second)
 import Control.Monad ((>=>), forM_, join)
 import Control.Monad.Fail (MonadFail)
 import Control.Monad.Writer (MonadWriter, execWriterT, tell)
@@ -17,6 +17,7 @@ import Data.List ((\\), find,groupBy, maximumBy)
 import qualified Data.Map.Strict as Map (Map, fromList, lookup)
 import Data.Maybe (listToMaybe)
 import Data.Ord (comparing)
+import qualified Data.Set as Set (difference, fromList, lookupMin, unions)
 import Text.ParserCombinators.ReadP (char, eof, many1, option, readP_to_S, readS_to_P, satisfy, sepBy1, skipSpaces, string)
 
 -- | Parses a string as a table of node name to node weight and children.
@@ -33,8 +34,9 @@ parseTree = mapM (fmap fst . find (null . snd) . readsLine) . lines where
         eof $> (name, (weight, children))
 
 -- | Finds a node with no parents.
-findRoot :: (Eq a) => [(a, (b, [a]))] -> Maybe a
-findRoot = listToMaybe . uncurry (\\) . second (concatMap snd) . unzip
+findRoot :: (Ord a) => [(a, (b, [a]))] -> Maybe a
+findRoot = Set.lookupMin . uncurry Set.difference .
+           (Set.fromList *** Set.unions . map (Set.fromList . snd)) . unzip
 
 -- | Returns the most common value and entries whose values do not match.
 findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
