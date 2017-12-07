@@ -66,3 +66,22 @@ redistribute :: (IArray a i, Integral i, Ix i) => a i i -> a i i
 indexDup :: (Ord a) => [a] -> Maybe (Int, Int)
 day6a :: String -> Maybe Int
 day6b :: String -> Maybe Int
+
+
+module Day7
+
+-- | Parses a string as a table of node name to node weight and children.
+parseTree :: (MonadFail m) => String -> m [(String, (Int, [String]))]
+
+-- | Finds a node with no parents.
+findRoot :: (Eq a) => [(a, (b, [a]))] -> Maybe a
+
+-- | Returns the most common value and entries whose values do not match.
+findUnbalanced :: (Eq b) => [(a, b)] -> Maybe (b, [(a, b)])
+
+-- | Returns a table of node name to tree weight, rooted at the given node.
+--   As a side effect, also <a>tell</a> the corrected weight for nodes
+--   whose tree weight does not equal their siblings'.
+weighChildren :: (MonadFail m, MonadWriter [(a, b)] m, Eq a, Eq b, Num b) => [(a, (b, [a]))] -> a -> m [(a, b)]
+day7a :: String -> Maybe String
+day7b :: String -> Maybe Int
