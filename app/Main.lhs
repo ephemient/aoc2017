@@ -28,6 +28,10 @@ import Day5 (day5a, day5b)
 ~~~ {.haskell}
 import Day6 (day6a, day6b)
 ~~~
+## [Day 7: Recursive Circus](/src/Day7.hs)
+~~~ {.haskell}
+import Day7 (day7a, day7b)
+~~~
 
 ---
 
@@ -42,8 +46,11 @@ getDayInput i = do
 readDayInput :: (Read a) => Int -> IO a
 readDayInput = fmap read . getDayInput
 
-printMaybe :: (Show a) => Maybe a -> IO ()
-printMaybe = maybe (putStrLn "(⊥)") print
+maybeBottom :: (a -> String) -> Maybe a -> String
+maybeBottom = maybe "(⊥)"
+
+showError :: (Show a) => (b -> String) -> Either a b -> String
+showError = either (\err -> "(" ++ show err ++ ")")
 
 run :: (b -> IO ()) -> [a -> b] -> a -> IO ()
 run showIO funcs contents = do
@@ -57,5 +64,6 @@ main = do
     readDayInput 3 >>= run print [day3a, day3b]
     getDayInput 4 >>= run print [day4a, day4b]
     getDayInput 5 >>= run print [day5a, day5b]
-    getDayInput 6 >>= run printMaybe [day6a, day6b]
+    getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
+    getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
 ~~~
