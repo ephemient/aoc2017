@@ -80,6 +80,10 @@ import Day6 (day6a, day6b)
 ```haskell
 import Day7 (day7a, day7b)
 ```
+## [Day 8: I Heard You Like Registers](/src/Day8.hs)
+```haskell
+import Day8 (day8a, day8b)
+```
 
 ---
 
@@ -114,4 +118,5 @@ main = do
     getDayInput 5 >>= run print [day5a, day5b]
     getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
     getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
+    getDayInput 8 >>= run print [day8a, day8b]
 ```
