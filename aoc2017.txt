@@ -90,30 +90,7 @@ day7b :: String -> Maybe Int
 
 module Day8
 
--- | A conditional register instruction.
-data Instruction reg val
-Instruction :: reg -> (val -> val) -> (val -> Bool) -> reg -> Instruction reg val
-
--- | The register to be manipulated.
-[target] :: Instruction reg val -> reg
-
--- | The operation to apply to <i>target</i>.
-[op] :: Instruction reg val -> val -> val
-
--- | The condition on this instruction.
-[cond] :: Instruction reg val -> val -> Bool
-
--- | The register for <i>cond</i> evaluation.
-[when] :: Instruction reg val -> reg
-
--- | Parses a string into a sequence of instructions.
-parse :: String -> [Instruction String Int]
-
--- | Returns an initial state with all known registered set to a constant
---   value.
-initialize :: (Ord reg) => val -> [Instruction reg val] -> Map reg val
-
 -- | Performs one operation on a register state, if the condition applies.
-exec :: (Ord reg, Num val) => Map reg val -> Instruction reg val -> Map reg val
+exec :: (Num a, Ord a, Read a) => Map String a -> String -> Map String a
 day8a :: String -> Int
 day8b :: String -> Int
