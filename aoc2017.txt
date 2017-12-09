@@ -97,13 +97,5 @@ day8b :: String -> Int
 
 
 module Day9
-
--- | Parse a section of angle-bracket bang-ignored garbage.
-parseGarbage :: (Monad m) => ParsecT String u m String
-
--- | <tt>parseGroup depth</tt> parses a group at <tt>depth</tt> with nested
---   groups and garbage, returning the total score: the sum of depths of
---   all groups.
-parseGroup :: (Monad m) => Int -> ParsecT String u m Int
-day9a :: String -> Either ParseError Int
-day9b :: String -> Either ParseError Int
+day9a :: String -> Int
+day9b :: String -> Int
