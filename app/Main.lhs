@@ -123,5 +123,5 @@ main = do
     getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
     getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
     getDayInput 8 >>= run print [day8a, day8b]
-    getDayInput 9 >>= run (putStrLn . showError show) [day9a, day9b]
+    getDayInput 9 >>= run print [day9a, day9b]
 ```

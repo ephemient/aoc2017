@@ -25,7 +25,6 @@ library
                      , array
                      , containers
                      , mtl
-                     , parsec
   default-language:    Haskell2010
 
 executable aoc2017-exe

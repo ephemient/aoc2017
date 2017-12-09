@@ -6,28 +6,23 @@ Description:    <http://adventofcode.com/2017/day/9 Day 9: Stream Processing>
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day9 (day9a, day9b) where
 
-import Control.Monad (void)
-import Data.Maybe (catMaybes)
-import Text.Parsec (ParseError, ParsecT, (<|>), many, parse, skipMany, try)
-import Text.Parsec.Char (anyChar, char, noneOf)
+import Data.List (mapAccumL)
 
--- | Parse a section of angle-bracket bang-ignored garbage.
-parseGarbage :: (Monad m) => ParsecT String u m String
-parseGarbage = char '<' >> do
-    garbage <- many $ Just <$> noneOf "!>" <|> Nothing <$ (char '!' >> anyChar)
-    catMaybes garbage <$ char '>'
+day9a :: String -> Int
+day9a = sum . snd . mapAccumL accum (1, Nothing) where
+    accum (k, Nothing) '{' = ((k + 1, Nothing), k)
+    accum (k, Nothing) '}' = ((k - 1, Nothing), 0)
+    accum (k, Nothing) '<' = ((k, Just False), 0)
+    accum (k, Just False) '>' = ((k, Nothing), 0)
+    accum (k, Just False) '!' = ((k, Just True), 0)
+    accum (k, Just True) _ = ((k, Just False), 0)
+    accum acc _ = (acc, 0)
 
--- | @parseGroup depth@ parses a group at @depth@ with nested groups and
--- garbage, returning the total score: the sum of depths of all groups.
-parseGroup :: (Monad m) => Int -> ParsecT String u m Int
-parseGroup depth = do
-    let skipGarbage = skipMany $ void (char ',') <|> void parseGarbage
-    skipGarbage >> char '{'
-    score <- sum <$> many (try $ parseGroup $! depth + 1)
-    skipGarbage >> depth + score <$ char '}'
-
-day9a :: String -> Either ParseError Int
-day9a = parse (parseGroup 1) ""
-
-day9b :: String -> Either ParseError Int
-day9b = fmap sum . parse (many $ (length <$> parseGarbage) <|> 0 <$ anyChar) ""
+day9b :: String -> Int
+day9b = sum . snd . mapAccumL accum Nothing where
+    accum Nothing '<' = (Just True, 0)
+    accum Nothing _ = (Nothing, 0)
+    accum (Just True) '>' = (Nothing, 0)
+    accum (Just True) '!' = (Just False, 0)
+    accum (Just True) _ = (Just True, 1)
+    accum (Just False) _ = (Just True, 0)

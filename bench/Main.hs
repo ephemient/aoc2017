@@ -1,7 +1,6 @@
 module Main (main) where
 
 import Criterion.Main (bench, bgroup, defaultMain, env, nf)
-import Data.Either (fromRight)
 import Day1 (day1a, day1b)
 import Day2 (day2a, day2b)
 import Day3 (day3a, day3b)
@@ -54,7 +53,7 @@ main = defaultMain
       , bench "part 2" $ nf day8b input
       ]
   , env (getDayInput 9) $ \input -> bgroup "Day 9"
-      [ bench "part 1" $ nf (fromRight 0 . day9a) input
-      , bench "part 2" $ nf (fromRight 0 . day9b) input
+      [ bench "part 1" $ nf day9a input
+      , bench "part 2" $ nf day9a input
       ]
   ]
