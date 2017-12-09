@@ -84,6 +84,10 @@ import Day7 (day7a, day7b)
 ```haskell
 import Day8 (day8a, day8b)
 ```
+## [Day 9: Stream Processing](/src/Day9.hs)
+```haskell
+import Day9 (day9a, day9b)
+```
 
 ---
 
@@ -119,4 +123,5 @@ main = do
     getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
     getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
     getDayInput 8 >>= run print [day8a, day8b]
+    getDayInput 9 >>= run (putStrLn . showError show) [day9a, day9b]
 ```
