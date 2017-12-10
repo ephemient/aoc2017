@@ -10,7 +10,7 @@ copyright:           MIT
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
-data-files:          day1.txt, day2.txt, day3.txt, day4.txt, day5.txt, day6.txt, day7.txt, day8.txt, day9.txt
+data-files:          day1.txt, day2.txt, day3.txt, day4.txt, day5.txt, day6.txt, day7.txt, day8.txt, day9.txt, day10.txt
 cabal-version:       >=1.10
 
 -- To avoid duplicated efforts in documentation and dealing with the
@@ -20,7 +20,7 @@ description:         Please see the README on Github at <https://github.com/ephe
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9
+  exposed-modules:     Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10
   build-depends:       base >= 4.7 && < 5
                      , array
                      , containers
@@ -44,7 +44,7 @@ test-suite aoc2017-test
   build-depends:       base
                      , aoc2017
                      , hspec
-  other-modules:       Day1Spec, Day2Spec, Day3Spec, Day4Spec, Day5Spec, Day6Spec, Day7Spec, Day8Spec, Day9Spec
+  other-modules:       Day1Spec, Day2Spec, Day3Spec, Day4Spec, Day5Spec, Day6Spec, Day7Spec, Day8Spec, Day9Spec, Day10Spec
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
