@@ -19,6 +19,25 @@ day1a :: String -> Int
 day1b :: String -> Int
 
 
+module Day10
+
+-- | <tt>roll len list (count, skip)</tt> reverses the first <tt>count</tt>
+--   elements of <tt>list</tt> then rolls both those reversed elements and
+--   an additional <tt>skip</tt> elements from the start of the list to the
+--   end of the list.
+--   
+--   <tt>len</tt> must be equal to <tt>length list</tt>.
+roll :: Int -> [a] -> (Int, Int) -> [a]
+
+-- | <tt>rolls len counts</tt> iterates <tt>roll len list (count,
+--   skip)</tt>, starting with <tt>list = [0..len-1]</tt>, for each
+--   <tt>count</tt> in <tt>counts</tt> and <tt>skip = 0, 1, ..</tt>.
+--   Finally, it unrotates by the total <tt>count + skip</tt> sum.
+rolls :: Int -> [Int] -> [Int]
+day10a :: Int -> String -> Int
+day10b :: String -> String
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
