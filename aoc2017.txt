@@ -36,6 +36,42 @@ day10a :: Int -> String -> Int
 day10b :: String -> String
 
 
+module Day11
+
+-- | A single step on a hexagonal grid.
+data Step
+N :: Step
+NE :: Step
+SE :: Step
+S :: Step
+SW :: Step
+NW :: Step
+
+-- | A position on a hexagonal grid.
+data Pos
+
+-- | Invariant: <tt>x</tt> and <tt>y</tt> must both be even or both be odd.
+Pos :: !Int -> !Int -> Pos
+
+-- | The horizontal offset from the origin.
+[x] :: Pos -> !Int
+
+-- | The vertical offset from the origin.
+[y] :: Pos -> !Int
+
+-- | Parse comma-separated steps.
+parse :: String -> [Step]
+
+-- | Move from a position by one step.
+step :: Pos -> Step -> Pos
+
+-- | Returns the minimum number of steps required to reach the origin.
+walk :: Pos -> Int
+day11a :: String -> Int
+day11b :: String -> Int
+instance GHC.Read.Read Day11.Step
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
