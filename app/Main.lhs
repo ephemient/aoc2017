@@ -92,6 +92,10 @@ import Day9 (day9a, day9b)
 ```haskell
 import Day10 (day10a, day10b)
 ```
+## [Day 11: Hex Ed](/src/Day11.hs)
+```haskell
+import Day11 (day11a, day11b)
+```
 
 ---
 
@@ -129,4 +133,5 @@ main = do
     getDayInput 8 >>= run print [day8a, day8b]
     getDayInput 9 >>= run print [day9a, day9b]
     getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
+    getDayInput 11 >>= run print [day11a, day11b]
 ```
