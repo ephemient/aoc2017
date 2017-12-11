@@ -4,7 +4,7 @@ Description:    <http://adventofcode.com/2017/day/11 Day 11: Hex Ed>
 -}
 {-# LANGUAGE RecordWildCards #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
-module Day11 (day11a, day11b) where
+module Day11 (day11a, day11b, Chart(..), chart) where
 
 import Data.Char (toUpper)
 import Data.List (foldl', scanl')
@@ -17,6 +17,13 @@ data Pos = Pos
   { x :: !Int   -- ^ The distance along the NE/SW axis.
   , y :: !Int   -- ^ The distance along the NW/SE axis.
   }             -- ^ The distance along the N/S axis is given by @x + y@.
+
+-- | A representation of all hexagons touched along a path.
+data Chart = Chart
+  { bounds :: ((Int, Int), (Int, Int)) -- ^ Cartesian bounding box.
+  , maxDistance :: Int                 -- ^ The maximum distance from origin.
+  , path :: [((Int, Int), Int)]        -- ^ Hexagons and distances from origin.
+  }
 
 -- | Parse comma-separated steps.
 parse :: String -> [Step]
@@ -40,3 +47,28 @@ day11a = walk . foldl' step (Pos 0 0) . parse
 
 day11b :: String -> Int
 day11b = maximum . map walk . scanl' step (Pos 0 0) . parse
+
+{-
+           ( 2, 1)       ( 3, 0)
+    ( 1, 1)       ( 2, 0)       ( 3,-1)
+           ( 1, 0)       ( 2,-1)
+    ( 0, 0)       ( 1,-1)       ( 2,-2)
+           ( 0,-1)       ( 1,-2)         Trapezoidal
+-------------------------------------------
+           ( 1, 3)       ( 3, 3)          Cartesian
+    ( 0, 2)       ( 2, 2)       ( 4, 2)
+           ( 1, 1)       ( 3, 1)
+    ( 0, 0)       ( 2, 0)       ( 4, 0)
+           ( 1,-1)       ( 3, -1)
+-}
+
+chart :: String -> Chart
+chart input = Chart {..} where
+    positions = scanl' step (Pos 0 0) $ parse input
+    points = [(x - y, x + y) | Pos {..} <- positions]
+    distances = map walk positions
+    bounds =
+        ((minimum $ map fst points, minimum $ map snd points),
+         (maximum $ map fst points, maximum $ map snd points))
+    maxDistance = maximum distances
+    path = zip points distances

@@ -11,6 +11,7 @@ category:            Web
 build-type:          Simple
 extra-source-files:  README.md
 data-files:          day1.txt, day2.txt, day3.txt, day4.txt, day5.txt, day6.txt, day7.txt, day8.txt, day9.txt, day10.txt, day11.txt
+                   , colormaps.yaml
 cabal-version:       >=1.10
 
 -- To avoid duplicated efforts in documentation and dealing with the
@@ -34,6 +35,22 @@ executable aoc2017-exe
   build-depends:       base
                      , markdown-unlit
                      , aoc2017
+  other-modules:       Paths_aoc2017
+  default-language:    Haskell2010
+
+executable aoc2017-day11
+  hs-source-dirs:      app
+  main-is:             Day11Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -main-is Day11Main
+  build-depends:       base
+                     , markdown-unlit
+                     , aoc2017
+                     , JuicyPixels
+                     , primitive
+                     , unordered-containers
+                     , scientific
+                     , vector
+                     , yaml
   other-modules:       Paths_aoc2017
   default-language:    Haskell2010
 
