@@ -44,6 +44,7 @@ import Data.Functor
 import Data.List
 import qualified Data.Map.Lazy as Map
 import Data.Maybe
+import Data.Monoid
 import Data.Ord
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
@@ -75,4 +76,4 @@ EOF
 [[ -e "day${DAY}.txt" ]] || touch "day${DAY}.txt"
 git add -N "src/Day${DAY}.hs" "test/Day${DAY}Spec.hs" "day${DAY}.txt"
 gvim -p aoc2017.cabal app/Main.lhs bench/Main.hs "src/Day${DAY}.hs" "test/Day${DAY}Spec.hs" "day${DAY}.txt" +4tabn
-stack ghci
+stack ghci aoc2017:lib

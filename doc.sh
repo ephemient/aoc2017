@@ -1,7 +1,7 @@
 #!/bin/bash
 . "$(git --exec-path)/git-sh-setup" || exit $?
 set -euxo pipefail
-stack haddock
+stack haddock aoc2017:lib
 export GIT_INDEX_FILE=$(mktemp -t aoc2017-doc.XXXXXX)
 trap 'rm -f "${GIT_INDEX_FILE}"' EXIT
 git read-tree --empty
