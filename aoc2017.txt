@@ -59,6 +59,19 @@ Pos :: !Int -> !Int -> Pos
 -- | The distance along the NW/SE axis.
 [y] :: Pos -> !Int
 
+-- | A representation of all hexagons touched along a path.
+data Chart
+Chart :: ((Int, Int), (Int, Int)) -> Int -> [((Int, Int), Int)] -> Chart
+
+-- | Cartesian bounding box.
+[bounds] :: Chart -> ((Int, Int), (Int, Int))
+
+-- | The maximum distance from origin.
+[maxDistance] :: Chart -> Int
+
+-- | Hexagons and distances from origin.
+[path] :: Chart -> [((Int, Int), Int)]
+
 -- | Parse comma-separated steps.
 parse :: String -> [Step]
 
@@ -69,6 +82,7 @@ step :: Pos -> Step -> Pos
 walk :: Pos -> Int
 day11a :: String -> Int
 day11b :: String -> Int
+chart :: String -> Chart
 instance GHC.Read.Read Day11.Step
 
 
