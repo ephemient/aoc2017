@@ -47,16 +47,16 @@ S :: Step
 SW :: Step
 NW :: Step
 
--- | A position on a hexagonal grid.
+-- | A position on a hexagonal grid, in trapezoidal coordinates.
 data Pos
 
--- | Invariant: <tt>x</tt> and <tt>y</tt> must both be even or both be odd.
+-- | The distance along the N/S axis is given by <tt>x + y</tt>.
 Pos :: !Int -> !Int -> Pos
 
--- | The horizontal offset from the origin.
+-- | The distance along the NE/SW axis.
 [x] :: Pos -> !Int
 
--- | The vertical offset from the origin.
+-- | The distance along the NW/SE axis.
 [y] :: Pos -> !Int
 
 -- | Parse comma-separated steps.
