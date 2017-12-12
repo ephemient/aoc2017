@@ -87,8 +87,10 @@ instance GHC.Read.Read Day11.Step
 
 
 module Day12
-parse :: String -> Map Int [Int]
-connected :: (Ord a) => Map a [a] -> a -> Set a
+
+-- | Creates an unlabeled graph with edges from each "0 <a>-</a> 1, 2.."
+--   line.
+parse :: (Graph gr) => String -> gr () ()
 day12a :: String -> Int
 day12b :: String -> Int
 
