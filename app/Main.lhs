@@ -45,7 +45,7 @@ Animate the Day 11 path (rendered at
 ```sh
 stack build aoc2017:exe:aoc2017-day11
 stack exec aoc2017-day11
-ffmpeg -vf lavfi -i nullsrc=s=$(identify day11-0000.png | cut -d' ' -f3):d=30 -framerate 275 -i 'day11-%04d.png' -vf '[0:v][1:v]overlay[video]' -map '[video]' -r 60 -c:v libx264 -pix_fmt yuv420p -profile:v baseline -level 3.0 -movflags +faststart -y day11.mp4
+ffmpeg -vf lavfi -i nullsrc=s=$(identify day11-0000.png | cut -d' ' -f3):d=30 -framerate 300 -i 'day11-%04d.png' -vf '[0:v][1:v]overlay[video]' -map '[video]' -r 60 -c:v libx264 -pix_fmt yuv420p -profile:v baseline -level 3.0 -movflags +faststart -y day11.mp4
 ```
 
 Generate [Haddock](https://www.haskell.org/haddock/) API documentation
@@ -105,6 +105,10 @@ import Day10 (day10a, day10b)
 ```haskell
 import Day11 (day11a, day11b)
 ```
+## [Day 12: Digital Plumber](/src/Day12.hs)
+```haskell
+import Day12 (day12a, day12b)
+```
 
 ---
 
@@ -143,4 +147,5 @@ main = do
     getDayInput 9 >>= run print [day9a, day9b]
     getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
     getDayInput 11 >>= run print [day11a, day11b]
+    getDayInput 12 >>= run print [day12a, day12b]
 ```
