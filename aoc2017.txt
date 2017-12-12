@@ -86,6 +86,13 @@ chart :: String -> Chart
 instance GHC.Read.Read Day11.Step
 
 
+module Day12
+parse :: String -> Map Int [Int]
+connected :: (Ord a) => Map a [a] -> a -> Set a
+day12a :: String -> Int
+day12b :: String -> Int
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
