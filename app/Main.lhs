@@ -117,7 +117,10 @@ import Day13 (day13a, day13b)
 ---
 
 ```haskell
+import Data.Maybe (mapMaybe)
 import Paths_aoc2017 (getDataFileName)
+import System.Environment (getArgs)
+import Text.Read (readMaybe)
 
 getDayInput :: Int -> IO String
 getDayInput i = do
@@ -140,17 +143,21 @@ run showIO funcs contents = do
 
 main :: IO ()
 main = do
-    getDayInput 1 >>= run print [day1a, day1b]
-    getDayInput 2 >>= run print [day2a, day2b]
-    readDayInput 3 >>= run print [day3a, day3b]
-    getDayInput 4 >>= run print [day4a, day4b]
-    getDayInput 5 >>= run print [day5a, day5b]
-    getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
-    getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
-    getDayInput 8 >>= run print [day8a, day8b]
-    getDayInput 9 >>= run print [day9a, day9b]
-    getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
-    getDayInput 11 >>= run print [day11a, day11b]
-    getDayInput 12 >>= run print [day12a, day12b]
-    getDayInput 13 >>= run print [day13a, day13b]
+    days <- mapMaybe readMaybe <$> getArgs
+    let given day action
+          | null days || day `elem` days = action
+          | otherwise = return ()
+    given 1 $ getDayInput 1 >>= run print [day1a, day1b]
+    given 2 $ getDayInput 2 >>= run print [day2a, day2b]
+    given 3 $ readDayInput 3 >>= run print [day3a, day3b]
+    given 4 $ getDayInput 4 >>= run print [day4a, day4b]
+    given 5 $ getDayInput 5 >>= run print [day5a, day5b]
+    given 6 $ getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
+    given 7 $ getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
+    given 8 $ getDayInput 8 >>= run print [day8a, day8b]
+    given 9 $ getDayInput 9 >>= run print [day9a, day9b]
+    given 10 $ getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
+    given 11 $ getDayInput 11 >>= run print [day11a, day11b]
+    given 12 $ getDayInput 12 >>= run print [day12a, day12b]
+    given 13 $ getDayInput 13 >>= run print [day13a, day13b]
 ```
