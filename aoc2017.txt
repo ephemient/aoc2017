@@ -101,6 +101,14 @@ module Day13
 
 -- | Maps each <tt>x: y</tt> line in the input to a <tt>(x, y)</tt> tuple.
 parse :: String -> [(Int, Int)]
+
+-- | <tt>combine (rs1, q1) (rs2, q2)</tt> returns an <tt>(rs3, lcm q1
+--   q2)</tt> such that
+--   
+--   <pre>
+--   and [r3 `mod` q1 `elem` rs1 &amp;&amp; r3 `mod` q2 `elem` rs2 | r3 &lt;- rs3]
+--   </pre>
+combine :: (Integral a) => ([a], a) -> ([a], a) -> ([a], a)
 day13a :: String -> Int
 day13b :: String -> Int
 
