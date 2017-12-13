@@ -2,10 +2,12 @@
 Module:         Day13
 Description:    <http://adventofcode.com/2017/day/13 Day 13: Packet Scanners>
 -}
+{-# LANGUAGE TransformListComp #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day13 (day13a, day13b) where
 
-import Data.List (foldl', sortOn)
+import Data.List ((\\), sortOn)
+import GHC.Exts (groupWith, the)
 
 -- | Maps each @x: y@ line in the input to a @(x, y)@ tuple.
 parse :: String -> [(Int, Int)]
@@ -31,8 +33,9 @@ day13a :: String -> Int
 day13a input = sum [d * n | (d, n) <- parse input, d `mod` (2 * n - 2) == 0]
 
 day13b :: String -> Int
-day13b input = head . fst $ foldl' combine ([0], 1)
-  [ ([t | t <- [0 .. q - 1], (t + d) `mod` q /= 0], q)
-  | (d, n) <- sortOn snd $ parse input
-  , let q = 2 * n - 2
+day13b input = head . fst $ foldl combine ([0], 1)
+  [ ([0 .. q - 1] \\ [q - 1 - (t - 1) `mod` q | t <- d], q)
+  | (d, n) <- parse input
+  , then group by n using groupWith
+  , let q = 2 * the n - 2
   ]

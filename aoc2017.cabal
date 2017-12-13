@@ -43,7 +43,6 @@ executable aoc2017-day11
   main-is:             Day11Main.hs
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N -main-is Day11Main
   build-depends:       base
-                     , markdown-unlit
                      , aoc2017
                      , JuicyPixels
                      , primitive
