@@ -97,6 +97,14 @@ day12a :: String -> Int
 day12b :: String -> Int
 
 
+module Day13
+
+-- | Maps each <tt>x: y</tt> line in the input to a <tt>(x, y)</tt> tuple.
+parse :: String -> [(Int, Int)]
+day13a :: String -> Int
+day13b :: String -> Int
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
