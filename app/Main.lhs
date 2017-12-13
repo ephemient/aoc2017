@@ -109,6 +109,10 @@ import Day11 (day11a, day11b)
 ```haskell
 import Day12 (day12a, day12b)
 ```
+## [Day 13: Packet Scanners](/src/Day13.hs)
+```haskell
+import Day13 (day13a, day13b)
+```
 
 ---
 
@@ -148,4 +152,5 @@ main = do
     getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
     getDayInput 11 >>= run print [day11a, day11b]
     getDayInput 12 >>= run print [day12a, day12b]
+    getDayInput 13 >>= run print [day13a, day13b]
 ```
