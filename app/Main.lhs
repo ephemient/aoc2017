@@ -48,6 +48,15 @@ stack exec aoc2017-day11
 ffmpeg -vf lavfi -i nullsrc=s=$(identify day11-0000.png | cut -d' ' -f3):d=30 -framerate 300 -i 'day11-%04d.png' -vf '[0:v][1:v]overlay[video]' -map '[video]' -r 60 -c:v libx264 -pix_fmt yuv420p -profile:v baseline -level 3.0 -movflags +faststart -y day11.mp4
 ```
 
+Animate the Day 14 grid (rendered at
+[Gyfcat](https://gfycat.com/AdventurousUnconsciousKarakul)):
+
+```sh
+stack build aoc2017:exe:aoc2017-day14
+stack exec aoc2017-day14
+ffmpeg -framerate 60 -i 'day11-%04d.png' -c:v libx264 -pix_fmt yuv420p -profile:v baseline -level 3.0 -movflags +faststart -y day11.mp4
+```
+
 Generate [Haddock](https://www.haskell.org/haddock/) API documentation
 (rendered at [ephemient.github.io/aoc2017](https://ephemient.github.io/aoc2017)):
 

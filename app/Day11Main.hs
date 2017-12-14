@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 module Day11Main (main) where
 
-import Control.Monad (forM_)
-import Control.Monad.Primitive (PrimMonad, PrimState)
 import Codec.Picture (writePng)
 import Codec.Picture.Types (MutableImage, Pixel, Pixel8, PixelRGB8(..), createMutableImage, freezeImage, writePixel)
+import Control.Monad (forM_)
+import Control.Monad.Primitive (PrimMonad, PrimState)
 import qualified Data.HashMap.Lazy as M ((!))
 import Data.Scientific (toRealFloat)
 import qualified Data.Vector as V ((!), length)
