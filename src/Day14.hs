@@ -5,6 +5,7 @@ Description:    <http://adventofcode.com/2017/day/14 Day 14: Disk Defragmentatio
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day14 (day14a, day14b) where
 
+import Control.Parallel.Strategies (parMap, rpar)
 import Data.Bits (FiniteBits, finiteBitSize, popCount, testBit)
 import Data.Graph (components, graphFromEdges)
 import Data.List (zip3, zip4)
@@ -14,7 +15,7 @@ import Day10 (hashString)
 -- | Given an input string, returns 'hashString' of the string with a dash and
 -- each integer in @[0..127]@.
 grid :: String -> [[Word8]]
-grid input = map hashString $ ((input ++) . ('-':) . show) <$> [0..127]
+grid input = parMap rpar hashString $ ((input ++) . ('-':) . show) <$> [0..127]
 
 -- | Returns a list of bits from most-significant to least-significant.
 bits :: (FiniteBits b) => b -> [Bool]
