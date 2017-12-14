@@ -20,7 +20,7 @@ import Day${DAY} (day${DAY}a, day${DAY}b)\\
 \`\`\`
     }
     /^main/,\$ {
-        /^\`\`\`/ i \\    getDayInput ${DAY} >>= run print [day${DAY}a, day${DAY}b]
+        /^\`\`\`/ i \\    run getDayInput print [day${DAY}a, day${DAY}b]
     }
 " app/Main.lhs
 [[ -e "src/Day${DAY}.hs" ]] || cat >"src/Day${DAY}.hs" <<EOF
@@ -51,6 +51,7 @@ import qualified Data.Set as Set
 import Data.Tuple
 import Data.Word
 import Debug.Trace
+import Text.Printf
 
 day${DAY}a :: String -> Int
 day${DAY}a = const 0
