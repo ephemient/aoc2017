@@ -113,6 +113,10 @@ import Day12 (day12a, day12b)
 ```haskell
 import Day13 (day13a, day13b)
 ```
+## [Day 14: Disk Defragmentation](/src/Day14.hs)
+```haskell
+import Day14 (day14a, day14b)
+```
 
 ---
 
@@ -160,4 +164,5 @@ main = do
     given 11 $ getDayInput 11 >>= run print [day11a, day11b]
     given 12 $ getDayInput 12 >>= run print [day12a, day12b]
     given 13 $ getDayInput 13 >>= run print [day13a, day13b]
+    given 14 $ getDayInput 14 >>= run print [day14a, day14b]
 ```

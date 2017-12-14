@@ -3,7 +3,7 @@ Module:         Day10
 Description:    <http://adventofcode.com/2017/day/10 Day 10: Knot Hash>
 -}
 {-# OPTIONS_HADDOCK ignore-exports #-}
-module Day10 (day10a, day10b) where
+module Day10 (day10a, day10b, hashString) where
 
 import Data.Array.IArray (IArray, (!), bounds, elems, ixmap, listArray)
 import Data.Array.Unboxed (UArray)
@@ -40,14 +40,18 @@ knotRanges b@(low, high) counts =
 hash :: (IArray a e, Ix i, Num i) => a i e -> [Int] -> a i e
 hash arr counts = foldl' reverseRange arr $ knotRanges (bounds arr) counts
 
+-- | Deriving a key from a string by using its codepoints plus some magic
+-- numbers, 'hash' @[0..255]@ 64 times, then 'xor' together each group of 16.
+hashString :: String -> [Word8]
+hashString = map (foldl' xor 0) . split . elems . hash arr . key where
+    arr = listArray (0, 255) [0..] :: UArray Int Word8
+    key = concat . replicate 64 . (++ [17, 31, 73, 47, 23]) . map ord
+    split = unfoldr (bool Nothing . Just . splitAt 16 <*> not . null)
+
 day10a :: Int -> String -> Int
 day10a len input = hashed ! 0 * hashed ! 1 where
     arr = listArray (0, len - 1) [0..] :: UArray Int Int
     hashed = hash arr . read $ '[' : input ++ "]"
 
 day10b :: String -> String
-day10b input = dense >>= printf "%02x" . foldl' xor 0 where
-    arr = listArray (0, 255) [0..] :: UArray Int Word8
-    sparse = elems . hash arr . concat . replicate 64 $
-        (lines input >>= map ord) ++ [17, 31, 73, 47, 23]
-    dense = unfoldr (bool Nothing . Just . splitAt 16 <*> not . null) sparse
+day10b = concatMap (printf "%02x") . hashString
