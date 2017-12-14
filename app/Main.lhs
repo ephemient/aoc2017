@@ -57,9 +57,12 @@ stack haddock aoc2017:lib
 
 ---
 
+<!--
 ```haskell
+{-# LANGUAGE NondecreasingIndentation #-}
 module Main (main) where
 ```
+-->
 
 ## [Day 1: Inverse Captcha](/src/Day1.hs)
 ```haskell
@@ -121,15 +124,14 @@ import Day14 (day14a, day14b)
 ---
 
 ```haskell
+import Control.Monad (when)
 import Data.Maybe (mapMaybe)
 import Paths_aoc2017 (getDataFileName)
 import System.Environment (getArgs)
 import Text.Read (readMaybe)
 
 getDayInput :: Int -> IO String
-getDayInput i = do
-    putStrLn $ "Day " ++ show i
-    getDataFileName ("day" ++ show i ++ ".txt") >>= readFile
+getDayInput i = getDataFileName ("day" ++ show i ++ ".txt") >>= readFile
 
 readDayInput :: (Read a) => Int -> IO a
 readDayInput = fmap read . getDayInput
@@ -140,29 +142,29 @@ maybeBottom = maybe "(⊥)"
 showError :: (Show a) => (b -> String) -> Either a b -> String
 showError = either (\err -> "(" ++ show err ++ ")")
 
-run :: (b -> IO ()) -> [a -> b] -> a -> IO ()
-run showIO funcs contents = do
+run :: Int -> (Int -> IO a) -> (b -> IO ()) -> [a -> b] -> IO ()
+run day readIO showIO funcs = do
+    days <- mapMaybe readMaybe <$> getArgs
+    when (null days || day `elem` days) $ do
+    putStrLn $ "Day " ++ show day
+    contents <- readIO day
     mapM_ (showIO . ($ contents)) funcs
     putStrLn ""
 
 main :: IO ()
 main = do
-    days <- mapMaybe readMaybe <$> getArgs
-    let given day action
-          | null days || day `elem` days = action
-          | otherwise = return ()
-    given 1 $ getDayInput 1 >>= run print [day1a, day1b]
-    given 2 $ getDayInput 2 >>= run print [day2a, day2b]
-    given 3 $ readDayInput 3 >>= run print [day3a, day3b]
-    given 4 $ getDayInput 4 >>= run print [day4a, day4b]
-    given 5 $ getDayInput 5 >>= run print [day5a, day5b]
-    given 6 $ getDayInput 6 >>= run (putStrLn . maybeBottom show) [day6a, day6b]
-    given 7 $ getDayInput 7 >>= run (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
-    given 8 $ getDayInput 8 >>= run print [day8a, day8b]
-    given 9 $ getDayInput 9 >>= run print [day9a, day9b]
-    given 10 $ getDayInput 10 >>= run putStrLn [show . day10a 256, day10b]
-    given 11 $ getDayInput 11 >>= run print [day11a, day11b]
-    given 12 $ getDayInput 12 >>= run print [day12a, day12b]
-    given 13 $ getDayInput 13 >>= run print [day13a, day13b]
-    given 14 $ getDayInput 14 >>= run print [day14a, day14b]
+    run 1 getDayInput print [day1a, day1b]
+    run 2 getDayInput print [day2a, day2b]
+    run 3 readDayInput print [day3a, day3b]
+    run 4 getDayInput print [day4a, day4b]
+    run 5 getDayInput print [day5a, day5b]
+    run 6 getDayInput (putStrLn . maybeBottom show) [day6a, day6b]
+    run 7 getDayInput (putStrLn . maybeBottom id) [day7a, fmap show . day7b]
+    run 8 getDayInput print [day8a, day8b]
+    run 9 getDayInput print [day9a, day9b]
+    run 10 getDayInput putStrLn [show . day10a 256, day10b]
+    run 11 getDayInput print [day11a, day11b]
+    run 12 getDayInput print [day12a, day12b]
+    run 13 getDayInput print [day13a, day13b]
+    run 14 getDayInput print [day14a, day14b]
 ```
