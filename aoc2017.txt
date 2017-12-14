@@ -32,6 +32,11 @@ knotRanges :: (Ix i, Num i) => (i, i) -> [Int] -> [(i, i)]
 
 -- | Sequentially reverses all ranges in an array from a list of lengths.
 hash :: (IArray a e, Ix i, Num i) => a i e -> [Int] -> a i e
+
+-- | Deriving a key from a string by using its codepoints plus some magic
+--   numbers, <a>hash</a> <tt>[0..255]</tt> 64 times, then <a>xor</a>
+--   together each group of 16.
+hashString :: String -> [Word8]
 day10a :: Int -> String -> Int
 day10b :: String -> String
 
@@ -111,6 +116,18 @@ parse :: String -> [(Int, Int)]
 combine :: (Integral a) => ([a], a) -> ([a], a) -> ([a], a)
 day13a :: String -> Int
 day13b :: String -> Int
+
+
+module Day14
+
+-- | Given an input string, returns <a>hashString</a> of the string with a
+--   dash and each integer in <tt>[0..127]</tt>.
+grid :: String -> [[Word8]]
+
+-- | Returns a list of bits from most-significant to least-significant.
+bits :: (FiniteBits b) => b -> [Bool]
+day14a :: String -> Int
+day14b :: String -> Int
 
 
 module Day2
