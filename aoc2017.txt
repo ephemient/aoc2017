@@ -28,10 +28,17 @@ reverseRange :: (IArray a e, Ix i, Num i) => a i e -> (i, i) -> a i e
 -- | Given array bounds and a list of lengths, returns a list of ranges in
 --   the array, with each one starting at an increasing distance from the
 --   end of the previous, wrapping around the ends of the array.
-knotRanges :: (Ix i, Num i) => (i, i) -> [Int] -> [(i, i)]
+knotRanges :: (Ix i, Num i) => (i, i) -> [Int] -> [Maybe (i, i)]
 
 -- | Sequentially reverses all ranges in an array from a list of lengths.
 hash :: (IArray a e, Ix i, Num i) => a i e -> [Int] -> a i e
+
+-- | Adds some magic numbers to the codepoints to a string, repeated 64
+--   times.
+deriveKey :: String -> [Int]
+
+-- | Reduce consecutive groups of a fixed length by <tt>xor</tt>.
+xorEach :: (IArray a e, Ix i, Bits e) => Int -> a i e -> [e]
 
 -- | Deriving a key from a string by using its codepoints plus some magic
 --   numbers, <a>hash</a> <tt>[0..255]</tt> 64 times, then <a>xor</a>
@@ -126,6 +133,9 @@ grid :: String -> [[Word8]]
 
 -- | Returns a list of bits from most-significant to least-significant.
 bits :: (FiniteBits b) => b -> [Bool]
+
+-- | Returns a list of the coordinates of connected groups of bits.
+groupedBits :: (FiniteBits b) => [[b]] -> [[(Int, Int)]]
 day14a :: String -> Int
 day14b :: String -> Int
 
