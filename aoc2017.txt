@@ -143,30 +143,30 @@ day14b :: String -> Int
 module Day15
 
 -- | Returns the initial values for generators A and B.
-parse :: String -> (Word64, Word64)
+parse :: String -> (# Word#, Word# #)
 
 -- | One step of generator A.
-genA :: Word64 -> Word64
+genA :: Word# -> Word#
 
 -- | One step of generator B.
-genB :: Word64 -> Word64
-
--- | Step generator A until a multiple of 4.
-genA' :: Word64 -> Word64
-
--- | Step generator A until a multiple of 8.
-genB' :: Word64 -> Word64
+genB :: Word# -> Word#
 
 -- | One step of both generators A and B.
-gen :: (Word64, Word64) -> (Word64, Word64)
+gen :: (# Word#, Word# #) -> (# Word#, Word# #)
 
 -- | Step both generators A and B until a multiple of 4 and 8 respectively.
-gen' :: (Word64, Word64) -> (Word64, Word64)
+gen' :: (# Word#, Word# #) -> (# Word#, Word# #)
 
--- | <pre>
---   count p f x n == length (filter p . take n . tail $ iterate f x)
---   </pre>
-count :: (a -> Bool) -> (a -> a) -> a -> Int -> Int
+-- | Tests whether the lower 16 bits of each pair item are equal.
+eq16 :: (# Word#, Word# #) -> Bool
+
+-- | <tt>count n 0 x</tt> counts how many match <tt>eq</tt> in <tt>take n
+--   [gen x, gen (gen x), ..]</tt>
+count :: Int -> Int -> (# Word#, Word# #) -> Int
+
+-- | <tt>count' n 0 x</tt> counts how many match <tt>eq</tt> in <tt>take n
+--   [gen x, gen (gen x), ..]</tt>
+count' :: Int -> Int -> (# Word#, Word# #) -> Int
 day15a :: String -> Int
 day15b :: String -> Int
 
