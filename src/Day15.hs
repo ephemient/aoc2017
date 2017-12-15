@@ -18,13 +18,13 @@ parse input = (read a, read b) where
 day15a :: String -> Int
 day15a input = length . filter id . take 40000000 $ zipWith (==) a b where
     (a0, b0) = parse input
-    a = map (.&. 0xffff) $ iterate (\x -> x * 16807 `mod` 2147483647) a0
-    b = map (.&. 0xffff) $ iterate (\x -> x * 48271 `mod` 2147483647) b0
+    a = map (.&. 0xffff) . tail $ iterate (\x -> x * 16807 `mod` 2147483647) a0
+    b = map (.&. 0xffff) . tail $ iterate (\x -> x * 48271 `mod` 2147483647) b0
 
 day15b :: String -> Int
 day15b input = length . filter id . take 5000000 $ zipWith (==) a b where
     (a0, b0) = parse input
-    a = map (.&. 0xffff) . filter ((== 0) . (`mod` 4)) $
+    a = map (.&. 0xffff) . filter ((== 0) . (.&. 3)) . tail $
         iterate (\x -> x * 16807 `mod` 2147483647) a0
-    b = map (.&. 0xffff) . filter ((== 0) . (`mod` 8)) $
+    b = map (.&. 0xffff) . filter ((== 0) . (.&. 7)) . tail $
         iterate (\x -> x * 48271 `mod` 2147483647) b0
