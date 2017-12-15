@@ -144,6 +144,29 @@ module Day15
 
 -- | Returns the initial values for generators A and B.
 parse :: String -> (Int, Int)
+
+-- | One step of generator A.
+genA :: Int -> Int
+
+-- | One step of generator B.
+genB :: Int -> Int
+
+-- | Step generator A until a multiple of 4.
+genA' :: Int -> Int
+
+-- | Step generator A until a multiple of 8.
+genB' :: Int -> Int
+
+-- | One step of both generators A and B.
+gen :: (Int, Int) -> (Int, Int)
+
+-- | Step both generators A and B until a multiple of 4 and 8 respectively.
+gen' :: (Int, Int) -> (Int, Int)
+
+-- | <pre>
+--   count p f x n == length (filter p . take n . tail $ iterate f x)
+--   </pre>
+count :: (a -> Bool) -> (a -> a) -> a -> Int -> Int
 day15a :: String -> Int
 day15b :: String -> Int
 
