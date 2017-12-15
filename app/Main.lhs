@@ -129,6 +129,10 @@ import Day13 (day13a, day13b)
 ```haskell
 import Day14 (day14a, day14b)
 ```
+## [Day 15: Dueling Generators](/src/Day15.hs)
+```haskell
+import Day15 (day15a, day15b)
+```
 
 ---
 
@@ -176,4 +180,5 @@ main = do
     run 12 getDayInput print [day12a, day12b]
     run 13 getDayInput print [day13a, day13b]
     run 14 getDayInput print [day14a, day14b]
+    run 15 getDayInput print [day15a, day15b]
 ```
