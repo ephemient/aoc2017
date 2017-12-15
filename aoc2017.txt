@@ -140,6 +140,14 @@ day14a :: String -> Int
 day14b :: String -> Int
 
 
+module Day15
+
+-- | Returns the initial values for generators A and B.
+parse :: String -> (Int, Int)
+day15a :: String -> Int
+day15b :: String -> Int
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
