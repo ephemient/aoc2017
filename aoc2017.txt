@@ -143,25 +143,25 @@ day14b :: String -> Int
 module Day15
 
 -- | Returns the initial values for generators A and B.
-parse :: String -> (Int, Int)
+parse :: String -> (Word64, Word64)
 
 -- | One step of generator A.
-genA :: Int -> Int
+genA :: Word64 -> Word64
 
 -- | One step of generator B.
-genB :: Int -> Int
+genB :: Word64 -> Word64
 
 -- | Step generator A until a multiple of 4.
-genA' :: Int -> Int
+genA' :: Word64 -> Word64
 
 -- | Step generator A until a multiple of 8.
-genB' :: Int -> Int
+genB' :: Word64 -> Word64
 
 -- | One step of both generators A and B.
-gen :: (Int, Int) -> (Int, Int)
+gen :: (Word64, Word64) -> (Word64, Word64)
 
 -- | Step both generators A and B until a multiple of 4 and 8 respectively.
-gen' :: (Int, Int) -> (Int, Int)
+gen' :: (Word64, Word64) -> (Word64, Word64)
 
 -- | <pre>
 --   count p f x n == length (filter p . take n . tail $ iterate f x)
