@@ -6,8 +6,6 @@ license:             BSD3
 license-file:        LICENSE
 author:              Daniel Lin
 maintainer:          ephemient@gmail.com
-copyright:           MIT
-category:            Web
 build-type:          Simple
 extra-source-files:  README.md
 data-files:          day1.txt, day2.txt, day3.txt, day4.txt, day5.txt, day6.txt, day7.txt, day8.txt, day9.txt, day10.txt, day11.txt, day12.txt, day13.txt, day14.txt, day15.txt
@@ -23,6 +21,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Day1, Day2, Day3, Day4, Day5, Day6, Day7, Day8, Day9, Day10, Day11, Day12, Day13, Day14, Day15
   build-depends:       base >= 4.7 && < 5
+                     , lcg
                      , array
                      , containers
                      , ghc-prim

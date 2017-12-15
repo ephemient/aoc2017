@@ -37,6 +37,7 @@ resolver: nightly-2017-11-25
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - .
+- packages/lcg
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 # extra-deps: []
@@ -66,4 +67,4 @@ packages:
 # compiler-check: newer-minor
 
 ghc-options:
-    aoc2017: -fllvm
+    lcg: -fllvm
