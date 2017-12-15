@@ -20,7 +20,7 @@ import Day${DAY} (day${DAY}a, day${DAY}b)\\
 \`\`\`
     }
     /^main/,\$ {
-        /^\`\`\`/ i \\    run getDayInput print [day${DAY}a, day${DAY}b]
+        /^\`\`\`/ i \\    run ${DAY} getDayInput print [day${DAY}a, day${DAY}b]
     }
 " app/Main.lhs
 [[ -e "src/Day${DAY}.hs" ]] || cat >"src/Day${DAY}.hs" <<EOF
