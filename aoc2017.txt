@@ -148,6 +148,39 @@ day15a :: String -> Int
 day15b :: String -> Int
 
 
+module Day16
+
+-- | A dance move.
+data Move i e
+Spin :: i -> Move i e
+Exchange :: i -> i -> Move i e
+Partner :: e -> e -> Move i e
+
+-- | Split words by whitespace or comma.
+words' :: String -> [String]
+
+-- | Parse a list of dance moves.
+parse :: String -> [Move Int Char]
+
+-- | Compose two permutations.
+(-*-) :: (IArray a e, IArray a' i, Ix i) => a i e -> a' i i -> a i e
+
+-- | Exponentiate a permutation.
+(-^-) :: (IArray a i, Ix i) => a i i -> Int -> a i i
+
+-- | Like <a>id</a>, but swapping the two given values.
+exchange :: (Eq a) => a -> a -> a -> a
+
+-- | Given a list of dance moves, map out the resulting partner changes.
+permuteNames :: (IArray a Char) => Int -> [Move i Char] -> a Char Char
+
+-- | Given a list of dance moves, map out the resulting spins and
+--   exchanges.
+permuteIndices :: (IArray a Int) => Int -> [Move Int e] -> a Int Int
+day16a :: Int -> String -> String
+day16b :: Int -> Int -> String -> String
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
