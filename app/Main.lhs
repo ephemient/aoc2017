@@ -133,6 +133,10 @@ import Day14 (day14a, day14b)
 ```haskell
 import Day15 (day15a, day15b)
 ```
+## [Day 16: Permutation Promenade](/src/Day16.hs)
+```haskell
+import Day16 (day16a, day16b)
+```
 
 ---
 
@@ -181,4 +185,5 @@ main = do
     run 13 getDayInput print [day13a, day13b]
     run 14 getDayInput print [day14a, day14b]
     run 15 getDayInput print [day15a, day15b]
+    run 16 getDayInput putStrLn [day16a 16, day16b 16 1000000000]
 ```
