@@ -156,7 +156,7 @@ Spin :: i -> Move i e
 Exchange :: i -> i -> Move i e
 Partner :: e -> e -> Move i e
 
--- | Split words by whitespace or comma.
+-- | Split words by whitespaces or commas.
 words' :: String -> [String]
 
 -- | Parse a list of dance moves.
@@ -164,9 +164,11 @@ parse :: String -> [Move Int Char]
 
 -- | Compose two permutations.
 (-*-) :: (IArray a e, IArray a' i, Ix i) => a i e -> a' i i -> a i e
+infixl 7 -*-
 
--- | Exponentiate a permutation.
+-- | Repeat a permutation.
 (-^-) :: (IArray a i, Ix i) => a i i -> Int -> a i i
+infixr 8 -^-
 
 -- | Like <a>id</a>, but swapping the two given values.
 exchange :: (Eq a) => a -> a -> a -> a
