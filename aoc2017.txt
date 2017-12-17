@@ -183,6 +183,11 @@ day16a :: Int -> String -> String
 day16b :: Int -> Int -> String -> String
 
 
+module Day17
+day17a :: Int -> Int
+day17b :: Int -> Int
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
