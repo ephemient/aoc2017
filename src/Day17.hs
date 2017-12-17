@@ -2,7 +2,6 @@
 Module:         Day17
 Description:    <http://adventofcode.com/2017/day/17 Day 17: Spinlock>
 -}
-{-# LANGUAGE BangPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day17 (day17a, day17b) where
 
@@ -18,9 +17,9 @@ day17a step = Seq.index s $ (i + 1) `mod` Seq.length s where
 
 day17b :: Int -> Int
 day17b step = insert 0 1 0 where
-    insert pos len !next
+    insert pos len next
       | len' > 50000000 = next
-      | otherwise = insert pos' len' . bool next (len + q) $ pos' == 1 where
+      | otherwise = insert pos' len' $! bool next (len + q) $ pos' == 1 where
         q = (len - pos) `div` (step + 1)
         pos' = (pos + (q + 1) * (step + 1) - 1) `mod` (len + q) + 1
         len' = len + q + 1
