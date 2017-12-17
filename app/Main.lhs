@@ -137,6 +137,10 @@ import Day15 (day15a, day15b)
 ```haskell
 import Day16 (day16a, day16b)
 ```
+## [Day 17: Spinlock](/src/Day17.hs)
+```haskell
+import Day17 (day17a, day17b)
+```
 
 ---
 
@@ -186,4 +190,5 @@ main = do
     run 14 getDayInput print [day14a, day14b]
     run 15 getDayInput print [day15a, day15b]
     run 16 getDayInput putStrLn [day16a 16, day16b 16 1000000000]
+    run 17 readDayInput print [day17a, day17b]
 ```
