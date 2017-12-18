@@ -188,6 +188,61 @@ day17a :: Int -> Int
 day17b :: Int -> Int
 
 
+module Day18
+
+-- | A single instruction.
+--   
+--   <a>Either</a> represents either a register reference or an immediate
+--   value.
+data Ins reg val
+Rcv :: reg -> Ins reg val
+Snd :: (Either reg val) -> Ins reg val
+Set :: reg -> (Either reg val) -> Ins reg val
+Add :: reg -> (Either reg val) -> Ins reg val
+Mul :: reg -> (Either reg val) -> Ins reg val
+Mod :: reg -> (Either reg val) -> Ins reg val
+Jgz :: (Either reg val) -> (Either reg val) -> Ins reg val
+
+-- | A specification for how to run a machine.
+data MachineSpec m pc reg val
+MachineSpec :: Array pc (Ins reg val) -> (val -> m ()) -> m val -> MachineSpec m pc reg val
+
+-- | The list of instructions.
+[program] :: MachineSpec m pc reg val -> Array pc (Ins reg val)
+
+-- | Handler for <a>Snd</a>.
+[send] :: MachineSpec m pc reg val -> val -> m ()
+
+-- | Handler for <a>Rcv</a>.
+[recv] :: MachineSpec m pc reg val -> m val
+
+-- | The current state of a machine.
+data MachineState pc reg val
+
+-- | The machine is running.
+MachineState :: pc -> Map reg val -> MachineState pc reg val
+
+-- | The program counter.
+[pc] :: MachineState pc reg val -> pc
+
+-- | The registers.
+[regs] :: MachineState pc reg val -> Map reg val
+
+-- | The machine is stopped.
+MachineTerminated :: MachineState pc reg val
+
+-- | Parse an assembly listing to instructions.
+parse :: String -> [Ins String Int]
+
+-- | Evaluate a single instruction.
+step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m (MachineState pc reg val)
+
+-- | Run a machine until its state reaches <a>MachineTerminated</a>.
+loop :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m ()
+day18a :: String -> Int
+day18b :: String -> IO Int
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
