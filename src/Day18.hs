@@ -14,6 +14,7 @@ import Control.Monad.State (evalState, get, put)
 import Control.Monad.Writer (execWriterT, tell)
 import Data.Array (Array, (!), bounds, listArray)
 import Data.IORef (modifyIORef', newIORef, readIORef)
+import Data.Int (Int64)
 import Data.Ix (Ix, inRange)
 import qualified Data.Map.Lazy as Map (empty, insert, lookup, singleton)
 import Data.Map.Lazy (Map)
@@ -51,7 +52,7 @@ data MachineState pc reg val
   | MachineTerminated
 
 -- | Parse an assembly listing to instructions.
-parse :: String -> [Ins String Int]
+parse :: (Read a) => String -> [Ins String a]
 parse = head . mapM parseIns . lines where
     parseIns line = lex line >>= \case
         ("rcv", s) -> [Rcv reg | (reg, "") <- lex s]
@@ -95,7 +96,7 @@ loop spec = loop' where
     loop' MachineTerminated = pure ()
     loop' state = step spec state >>= loop'
 
-day18a :: String -> Int
+day18a :: String -> Int64
 day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
     loop spec MachineState {pc = 0, regs = Map.empty} where
     program = parse input
@@ -108,7 +109,7 @@ day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
             pure val
       }
 
-day18b :: String -> IO Int
+day18b :: String -> IO Int64
 day18b input = do
     counter <- newIORef 0
     chan0 <- newChan
