@@ -6,6 +6,7 @@ Description:    <http://adventofcode.com/2017/day/18 Day 18: Duet>
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day18 (day18a, day18b) where
 
+import Control.Arrow (first)
 import Control.Concurrent (forkIO, killThread)
 import Control.Concurrent.Chan (newChan, readChan, writeChan)
 import Control.Exception (BlockedIndefinitelyOnMVar(..), bracket, handle)
@@ -61,10 +62,8 @@ parse = head . mapM parseIns . lines where
         ("add", s) -> [Add reg val | (reg, r) <- lex s, (val, "") <- lex' r]
         ("mul", s) -> [Mul reg val | (reg, r) <- lex s, (val, "") <- lex' r]
         ("mod", s) -> [Mod reg val | (reg, r) <- lex s, (val, "") <- lex' r]
-        ("jgz", s) ->
-            [Jgz cond dest | (cond, r) <- lex' s, (dest, "") <- lex' r]
-    lex' s = [(Right val, r) | (val, r) <- reads s] ++
-             [(Left reg, r) | (reg, r) <- lex s]
+        ("jgz", s) -> [Jgz cnd jmp | (cnd, r) <- lex' s, (jmp, "") <- lex' r]
+    lex' s = (first Right <$> reads s) ++ (first Left <$> lex s)
 
 -- | Evaluate a single instruction.
 step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) =>
@@ -79,11 +78,12 @@ step MachineSpec {..} s@MachineState {..} = case program ! pc of
     Add reg val -> mut (+) reg val
     Mul reg val -> mut (*) reg val
     Mod reg val -> mut mod reg val
-    Jgz (load -> cond) (load -> dest) ->
-        check s {pc = pc + (if cond > 0 then fromIntegral dest else 1)}
+    Jgz (load -> cnd) (load -> jmp) ->
+        check s {pc = pc + (if cnd > 0 then fromIntegral jmp else 1)}
   where
-    load = either (fromMaybe 0 . flip Map.lookup regs) id
-    mut op reg@(load . Left -> src) (load -> val) =
+    loadReg = fromMaybe 0 . flip Map.lookup regs
+    load = either loadReg id
+    mut op reg@(loadReg -> src) (load -> val) =
         check s {pc = pc + 1, regs = Map.insert reg (op src val) regs}
     check MachineState {pc} | not (inRange (bounds program) pc) =
         pure MachineTerminated
@@ -109,19 +109,19 @@ day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
             pure val
       }
 
-day18b :: String -> IO Int64
+day18b :: String -> IO Int
 day18b input = do
     counter <- newIORef 0
     chan0 <- newChan
     chan1 <- newChan
-    let program = parse input
+    let program = parse input :: [Ins String Int64]
         spec0 = MachineSpec
           { program = listArray (0, length program - 1) program
           , send = writeChan chan1
           , recv = readChan chan0
           }
         spec1 = spec0
-          { send = (modifyIORef' counter (+ 1) >>) . writeChan chan0
+          { send = (modifyIORef' counter succ >>) . writeChan chan0
           , recv = readChan chan1
           }
     handle (\BlockedIndefinitelyOnMVar -> return ()) . bracket
