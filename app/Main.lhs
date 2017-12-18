@@ -141,6 +141,10 @@ import Day16 (day16a, day16b)
 ```haskell
 import Day17 (day17a, day17b)
 ```
+## [Day 18: Duet](/src/Day18.hs)
+```haskell
+import Day18 (day18a, day18b)
+```
 
 ---
 
@@ -191,4 +195,5 @@ main = do
     run 15 getDayInput print [day15a, day15b]
     run 16 getDayInput putStrLn [day16a 16, day16b 16 1000000000]
     run 17 readDayInput print [day17a, day17b]
+    run 18 getDayInput (>>= print) [return . day18a, day18b]
 ```
