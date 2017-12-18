@@ -232,15 +232,15 @@ MachineState :: pc -> Map reg val -> MachineState pc reg val
 MachineTerminated :: MachineState pc reg val
 
 -- | Parse an assembly listing to instructions.
-parse :: String -> [Ins String Int]
+parse :: (Read a) => String -> [Ins String a]
 
 -- | Evaluate a single instruction.
 step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m (MachineState pc reg val)
 
 -- | Run a machine until its state reaches <a>MachineTerminated</a>.
 loop :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m ()
-day18a :: String -> Int
-day18b :: String -> IO Int
+day18a :: String -> Int64
+day18b :: String -> IO Int64
 
 
 module Day2
