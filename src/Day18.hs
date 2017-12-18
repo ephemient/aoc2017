@@ -2,7 +2,7 @@
 Module:         Day18
 Description:    <http://adventofcode.com/2017/day/18 Day 18: Duet>
 -}
-{-# LANGUAGE FlexibleContexts, LambdaCase, NamedFieldPuns, RecordWildCards, ViewPatterns #-}
+{-# LANGUAGE LambdaCase, NamedFieldPuns, RecordWildCards, ViewPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day18 (day18a, day18b) where
 
@@ -62,7 +62,6 @@ parse = head . mapM parseIns . lines where
         ("mod", s) -> [Mod reg val | (reg, r) <- lex s, (val, "") <- lex' r]
         ("jgz", s) ->
             [Jgz cond dest | (cond, r) <- lex' s, (dest, "") <- lex' r]
-        _ -> []
     lex' s = [(Right val, r) | (val, r) <- reads s] ++
              [(Left reg, r) | (reg, r) <- lex s]
 
@@ -74,21 +73,17 @@ step MachineSpec {..} s@MachineState {..} = case program ! pc of
     Rcv reg -> do
         val <- recv
         check s {pc = pc + 1, regs = Map.insert reg val regs}
-    Snd (load -> val) -> do
-        send val
-        check s {pc = pc + 1}
-    Set reg (load -> val) ->
-        check s {pc = pc + 1, regs = Map.insert reg val regs}
-    Add reg@(load . Left -> src) (load -> val) ->
-        check s {pc = pc + 1, regs = Map.insert reg (src + val) regs}
-    Mul reg@(load . Left -> src) (load -> val) ->
-        check s {pc = pc + 1, regs = Map.insert reg (src * val) regs}
-    Mod reg@(load . Left -> src) (load -> val) ->
-        check s {pc = pc + 1, regs = Map.insert reg (src `mod` val) regs}
+    Snd (load -> val) -> send val >> check s {pc = pc + 1}
+    Set reg val -> mut (flip const) reg val
+    Add reg val -> mut (+) reg val
+    Mul reg val -> mut (*) reg val
+    Mod reg val -> mut mod reg val
     Jgz (load -> cond) (load -> dest) ->
         check s {pc = pc + (if cond > 0 then fromIntegral dest else 1)}
   where
     load = either (fromMaybe 0 . flip Map.lookup regs) id
+    mut op reg@(load . Left -> src) (load -> val) =
+        check s {pc = pc + 1, regs = Map.insert reg (op src val) regs}
     check MachineState {pc} | not (inRange (bounds program) pc) =
         pure MachineTerminated
     check state = pure state
@@ -125,7 +120,7 @@ day18b input = do
           , recv = readChan chan0
           }
         spec1 = spec0
-          { send = \val -> modifyIORef' counter(+ 1) >> writeChan chan0 val
+          { send = (modifyIORef' counter (+ 1) >>) . writeChan chan0
           , recv = readChan chan1
           }
     handle (\BlockedIndefinitelyOnMVar -> return ()) . bracket
