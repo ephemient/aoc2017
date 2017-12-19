@@ -10,7 +10,7 @@ import Control.Arrow (first)
 import Control.Concurrent (forkIO, killThread)
 import Control.Concurrent.Chan (newChan, readChan, writeChan)
 import Control.Exception (BlockedIndefinitelyOnMVar(..), bracket, handle)
-import Control.Monad (when)
+import Control.Monad (liftM2, when)
 import Control.Monad.State (evalState, get, put)
 import Control.Monad.Writer (execWriterT, tell)
 import Data.Array (Array, (!), bounds, listArray)
@@ -39,7 +39,7 @@ data Ins reg val
 data MachineSpec m pc reg val = MachineSpec
   { program :: Array pc (Ins reg val)  -- ^ The list of instructions.
   , send :: val -> m ()                -- ^ Handler for 'Snd'.
-  , recv :: m val                      -- ^ Handler for 'Rcv'.
+  , recv :: val -> m val               -- ^ Handler for 'Rcv'.
   }
 
 -- | The current state of a machine.
@@ -71,7 +71,7 @@ step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) =>
     m (MachineState pc reg val)
 step MachineSpec {..} s@MachineState {..} = case program ! pc of
     Rcv reg -> do
-        val <- recv
+        val <- recv $ loadReg reg
         check s {pc = pc + 1, regs = Map.insert reg val regs}
     Snd (load -> val) -> send val >> check s {pc = pc + 1}
     Set reg val -> mut (flip const) reg val
@@ -103,10 +103,9 @@ day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
     spec = MachineSpec
       { program = listArray (0, length program - 1) program
       , send = put
-      , recv = do
-            val <- get
-            when (val /= 0) . tell . First $ Just val
-            pure val
+      , recv = \case
+            0 -> pure 0
+            _ -> get >>= liftM2 (<$) id (tell . First . Just)
       }
 
 day18b :: String -> IO Int
@@ -118,11 +117,11 @@ day18b input = do
         spec0 = MachineSpec
           { program = listArray (0, length program - 1) program
           , send = writeChan chan1
-          , recv = readChan chan0
+          , recv = const $ readChan chan0
           }
         spec1 = spec0
           { send = (modifyIORef' counter succ >>) . writeChan chan0
-          , recv = readChan chan1
+          , recv = const $ readChan chan1
           }
     handle (\BlockedIndefinitelyOnMVar -> return ()) . bracket
         (forkIO $ loop spec0 MachineState {pc = 0, regs = Map.singleton "p" 0})
