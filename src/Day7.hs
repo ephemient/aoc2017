@@ -14,6 +14,7 @@ import Data.Functor (($>))
 import Data.List (find, group, maximumBy)
 import qualified Data.Map.Strict as Map (Map, fromList, lookup)
 import Data.Maybe (listToMaybe)
+import Data.Monoid (First(..))
 import Data.Ord (comparing)
 import qualified Data.Set as Set (difference, fromList, lookupMin, unions)
 import Text.ParserCombinators.ReadP (char, eof, many1, option, readP_to_S, readS_to_P, satisfy, sepBy1, skipSpaces, string)
@@ -45,7 +46,7 @@ mode x = listToMaybe . maximumBy (comparing length) $ group x
 --
 -- As a side effect, also 'tell' the corrected weight for nodes whose tree
 -- weight does not equal the majority of their siblings'.
-weighTree :: (Monad m, MonadWriter [b] m, Ord a, Eq b, Num b) =>
+weighTree :: (Monad m, MonadWriter (First b) m, Ord a, Eq b, Num b) =>
     Map.Map a (b, [a]) -> a -> m b
 weighTree tree root = do
     let Just (weight, children) = Map.lookup root tree
@@ -54,7 +55,7 @@ weighTree tree root = do
         check child actualWeight
           | actualWeight == targetWeight = pure ()
           | Just (childWeight, _) <- Map.lookup child tree
-          = tell [childWeight + targetWeight - actualWeight]
+          = tell . First . Just $ childWeight + targetWeight - actualWeight
     zipWithM_ check children childWeights
     pure $ weight + sum childWeights
 
@@ -65,4 +66,4 @@ day7b :: String -> Maybe Int
 day7b input = do
     tree <- parseTree input
     root <- findRoot tree
-    join $ listToMaybe <$> execWriterT (weighTree (Map.fromList tree) root)
+    join $ getFirst <$> execWriterT (weighTree (Map.fromList tree) root)
