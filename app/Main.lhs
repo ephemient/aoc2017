@@ -145,6 +145,10 @@ import Day17 (day17a, day17b)
 ```haskell
 import Day18 (day18a, day18b)
 ```
+## [Day 19: A Series of Tubes](/src/Day19.hs)
+```haskell
+import Day19 (day19a, day19b)
+```
 
 ---
 
@@ -196,4 +200,5 @@ main = do
     run 16 getDayInput putStrLn [day16a 16, day16b 16 1000000000]
     run 17 readDayInput print [day17a, day17b]
     run 18 getDayInput (>>= print) [return . day18a, day18b]
+    run 19 getDayInput putStrLn [day19a, show . day19b]
 ```
