@@ -6,7 +6,7 @@ Description:    <http://adventofcode.com/2017/day/13 Day 13: Packet Scanners>
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day13 (day13a, day13b) where
 
-import Data.List ((\\), sortOn)
+import Data.List ((\\))
 import GHC.Exts (groupWith, the)
 
 -- | Maps each @x: y@ line in the input to a @(x, y)@ tuple.
