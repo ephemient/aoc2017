@@ -109,9 +109,9 @@ day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
             pure val
       }
 
-day18b :: String -> IO Int64
+day18b :: String -> IO Int
 day18b input = do
-    counter <- newIORef (0 :: Int)
+    counter <- newIORef 0
     chan0 <- newChan
     chan1 <- newChan
     let program = parse input :: [Ins String Int64]
@@ -128,4 +128,4 @@ day18b input = do
         (forkIO $ loop spec0 MachineState {pc = 0, regs = Map.singleton "p" 0})
         killThread . const $
         loop spec1 MachineState {pc = 0, regs = Map.singleton "p" 1}
-    fromIntegral <$> readIORef counter
+    readIORef counter
