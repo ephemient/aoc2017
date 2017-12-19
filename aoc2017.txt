@@ -240,7 +240,7 @@ step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec 
 -- | Run a machine until its state reaches <a>MachineTerminated</a>.
 loop :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m ()
 day18a :: String -> Int64
-day18b :: String -> IO Int
+day18b :: String -> Int
 
 
 module Day19
