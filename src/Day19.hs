@@ -40,11 +40,8 @@ move (x, y) R = (x + 1, y)
 
 -- | Returns the cardinal directions around a point which contain non-space.
 joints :: (IArray a Char, Ix i, Num i) => a (i, i) Char -> (i, i) -> [Direction]
-joints maze p =
-  [ d
-  | d <- [minBound .. maxBound]
-  , (&&) <$> inRange (bounds maze) <*> not . isSpace . (maze !) $ move p d
-  ]
+joints maze p = filter f [minBound .. maxBound] where
+    f d = (&&) <$> inRange (bounds maze) <*> not . isSpace . (maze !) $ move p d
 
 -- | Walks a maze from a starting point in a direction until it runs of
 -- non-space characters to follow. Returns a list of all characters on the walk.
@@ -52,17 +49,14 @@ walk :: (IArray a Char, Ix i, Num i) =>
     a (i, i) Char -> (i, i) -> Direction -> String
 walk maze p d
   | not (inRange (bounds maze) p) || isSpace c = []
-  | otherwise = c : walk maze (move p d') d'
+  | otherwise = c : (walk maze =<< move p) (if c == '+' then d' else d)
   where
     c = maze ! p
-    d' = case (c, joints maze p \\ [rot180 d]) of
-        ('+', [d']) -> d'
-        _ -> d
+    [d'] = joints maze p \\ [rot180 d]
 
 day19a :: String -> String
 day19a input = filter isAlpha $ walk maze p0 D where
     (maze, p0) = parse @UArray input
 
 day19b :: String -> Int
-day19b input = length $ walk maze p0 D where
-    (maze, p0) = parse @UArray input
+day19b input = length $ walk maze p0 D where (maze, p0) = parse @UArray input
