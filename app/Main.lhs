@@ -199,6 +199,6 @@ main = do
     run 15 getDayInput print [day15a, day15b]
     run 16 getDayInput putStrLn [day16a 16, day16b 16 1000000000]
     run 17 readDayInput print [day17a, day17b]
-    run 18 getDayInput (>>= print) [return . fromIntegral . day18a, day18b]
+    run 18 getDayInput print [fromIntegral . day18a, day18b]
     run 19 getDayInput putStrLn [day19a, show . day19b]
 ```

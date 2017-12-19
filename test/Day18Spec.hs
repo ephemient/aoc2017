@@ -24,4 +24,4 @@ spec = do
             day18a example `shouldBe` 4
     describe "part 2" $
         it "examples" $
-            day18b example >>= (`shouldBe` 1)
+            day18b example `shouldBe` 1

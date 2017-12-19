@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Criterion.Main (bench, bgroup, defaultMain, env, nf, nfIO)
+import Criterion.Main (bench, bgroup, defaultMain, env, nf)
 import Day1 (day1a, day1b)
 import Day2 (day2a, day2b)
 import Day3 (day3a, day3b)
@@ -100,7 +100,7 @@ main = defaultMain
       ]
   , env (getDayInput 18) $ \input -> bgroup "Day 18"
       [ bench "part 1" $ nf day18a input
-      , bench "part 2" $ nfIO $ day18b input
+      , bench "part 2" $ nf day18b input
       ]
   , env (getDayInput 19) $ \input -> bgroup "Day 19"
       [ bench "part 1" $ nf day19a input
