@@ -243,6 +243,40 @@ day18a :: String -> Int64
 day18b :: String -> IO Int64
 
 
+module Day19
+
+-- | Represents a cardinal direction.
+data Direction
+U :: Direction
+D :: Direction
+L :: Direction
+R :: Direction
+
+-- | Returns the 2D representation of a string by lines and the index of
+--   the only <tt>|</tt> pipe character on the first line.
+parse :: (IArray a Char) => String -> (a (Int, Int) Char, (Int, Int))
+
+-- | Rotates a cardinal direction by 180 degrees.
+rot180 :: Direction -> Direction
+
+-- | Moves a point one step in a cardinal direction.
+move :: (Num a) => (a, a) -> Direction -> (a, a)
+
+-- | Returns the cardinal directions around a point which contain
+--   non-space.
+joints :: (IArray a Char, Ix i, Num i) => a (i, i) Char -> (i, i) -> [Direction]
+
+-- | Walks a maze from a starting point in a direction until it runs of
+--   non-space characters to follow. Returns a list of all characters on
+--   the walk.
+walk :: (IArray a Char, Ix i, Num i) => a (i, i) Char -> (i, i) -> Direction -> String
+day19a :: String -> String
+day19b :: String -> Int
+instance GHC.Classes.Eq Day19.Direction
+instance GHC.Enum.Enum Day19.Direction
+instance GHC.Enum.Bounded Day19.Direction
+
+
 module Day2
 
 -- | The <a>readSpreadsheet</a> function splits lines to rows and spaces to
