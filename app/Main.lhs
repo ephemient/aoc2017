@@ -149,6 +149,10 @@ import Day18 (day18a, day18b)
 ```haskell
 import Day19 (day19a, day19b)
 ```
+## [Day 20: Particle Swarm](/src/Day20.hs)
+```haskell
+import Day20 (day20a, day20b)
+```
 
 ---
 
@@ -201,4 +205,5 @@ main = do
     run 17 readDayInput print [day17a, day17b]
     run 18 getDayInput print [fromIntegral . day18a, day18b]
     run 19 getDayInput putStrLn [day19a, show . day19b]
+    run 20 getDayInput print [day20a, length . day20b]
 ```
