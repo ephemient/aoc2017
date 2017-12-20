@@ -298,7 +298,6 @@ Point :: !(Vec3 a) -> !(Vec3 a) -> !(Vec3 a) -> Point a
 [pos] :: Point a -> !(Vec3 a)
 [vel] :: Point a -> !(Vec3 a)
 [acc] :: Point a -> !(Vec3 a)
-readMany :: (Read a) => String -> [a]
 
 -- | Reads points.
 parse :: (Read a) => String -> [Point a]
@@ -325,8 +324,6 @@ signumsMatch :: (Eq a, Num a) => Point a -> Bool
 collide :: (Ord a) => (b -> a) -> [b] -> [b]
 day20a :: String -> Int
 day20b :: String -> [Int]
-instance GHC.Show.Show a => GHC.Show.Show (Day20.Point a)
-instance GHC.Show.Show a => GHC.Show.Show (Day20.Vec3 a)
 instance GHC.Classes.Ord a => GHC.Classes.Ord (Day20.Vec3 a)
 instance GHC.Classes.Eq a => GHC.Classes.Eq (Day20.Vec3 a)
 
