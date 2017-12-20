@@ -286,6 +286,47 @@ day2a :: String -> Int
 day2b :: String -> Int
 
 
+module Day20
+
+-- | A 3D vector.
+data Vec3 a
+Vec3 :: !a -> !a -> !a -> Vec3 a
+[x] :: Vec3 a -> !a
+[y] :: Vec3 a -> !a
+[z] :: Vec3 a -> !a
+
+-- | A point with position, velocity, and acceleration in 3D space.
+data Point a
+Point :: !(Vec3 a) -> !(Vec3 a) -> !(Vec3 a) -> Point a
+[pos] :: Point a -> !(Vec3 a)
+[vel] :: Point a -> !(Vec3 a)
+[acc] :: Point a -> !(Vec3 a)
+
+-- | Reads points.
+parse :: (Read a) => String -> [Point a]
+
+-- | Pointwise addition.
+(-+-) :: (Num a) => Vec3 a -> Vec3 a -> Vec3 a
+infixl 3 -+-
+
+-- | Performs one timestep of velocity and position updates.
+step :: (Num a) => Point a -> Point a
+
+-- | Returns the Manhattan distance of a vector to the origin.
+manhattan :: (Num a) => Vec3 a -> a
+
+-- | Returns true if repeated <a>step</a> will not change the sign of any
+--   component of velocity and position.
+signumsMatch :: (Eq a, Num a) => Point a -> Bool
+
+-- | Filters out all points with duplicate positions.
+collide :: (Ord a) => (b -> Vec3 a) -> [b] -> [b]
+day20a :: String -> Int
+day20b :: String -> [Int]
+instance GHC.Classes.Ord a => GHC.Classes.Ord (Day20.Vec3 a)
+instance GHC.Classes.Eq a => GHC.Classes.Eq (Day20.Vec3 a)
+
+
 module Day3
 day3a :: Int -> Int
 day3b :: Int -> Int
