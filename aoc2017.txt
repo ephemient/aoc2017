@@ -306,8 +306,12 @@ Point :: !(Vec3 a) -> !(Vec3 a) -> !(Vec3 a) -> Point a
 parse :: (Read a) => String -> [Point a]
 
 -- | Pointwise addition.
-(-+-) :: (Num a) => Vec3 a -> Vec3 a -> Vec3 a
-infixl 3 -+-
+(*+*) :: (Num a) => Vec3 a -> Vec3 a -> Vec3 a
+infixl 3 *+*
+
+-- | Pointwise subtraction.
+(*-*) :: (Num a) => Vec3 a -> Vec3 a -> Vec3 a
+infixl 3 *-*
 
 -- | Performs one timestep of velocity and position updates.
 step :: (Num a) => Point a -> Point a
@@ -319,8 +323,8 @@ manhattan :: (Num a) => Vec3 a -> a
 --   component of velocity and position.
 signumsMatch :: (Eq a, Num a) => Point a -> Bool
 
--- | Filters out all points with duplicate positions.
-collide :: (Ord a) => (b -> Vec3 a) -> [b] -> [b]
+-- | Filters out all elements which are duplicated under transformation.
+collide :: (Ord a) => (b -> a) -> [b] -> [b]
 day20a :: String -> Int
 day20b :: String -> [Int]
 instance GHC.Classes.Ord a => GHC.Classes.Ord (Day20.Vec3 a)
