@@ -4,7 +4,7 @@ Description:    <http://adventofcode.com/2017/day/20 Day 20: Particle Stream>
 -}
 {-# LANGUAGE NamedFieldPuns, RecordWildCards, ViewPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
-module Day20 (day20a, day20b) where
+module Day20 (collide, day20a, day20b, parse, step) where
 
 import Control.Arrow (second)
 import Data.Function (on)
@@ -85,7 +85,7 @@ day20b =
             Vec3 x y z <== Vec3 u v w =
                 abs x <= abs u && abs y <= abs v && abs z <= abs w
             infix 4 <==
-      , octant <- groupBy ((==) `on` sgnVec3 . acc) points
+      , octant <- groupBy ((==) `on` sgnVec3 . pos) points
       , p:ps <- tails octant
       , q <- ps
       , let dPos = pos p *-* pos q
