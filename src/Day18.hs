@@ -18,6 +18,7 @@ import qualified Data.Map.Lazy as Map (empty, insert, lookup, singleton)
 import Data.Map.Lazy (Map)
 import Data.Maybe (catMaybes, fromJust, fromMaybe, listToMaybe)
 import Data.Monoid (First(..))
+import Text.Read (readMaybe)
 
 -- | A single instruction.
 --
@@ -44,10 +45,6 @@ data MachineState pc reg val
       }
     -- | The machine is stopped.
   | MachineTerminated
-
--- | Read a value if possible.
-readMaybe :: (Read a) => String -> Maybe a
-readMaybe s = listToMaybe [a | (a, "") <- reads s]
 
 -- | Parse an assembly listing to instructions.
 parse :: (Integral a, Read a) => String -> [Ins String a]
