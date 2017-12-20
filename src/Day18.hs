@@ -6,20 +6,18 @@ Description:    <http://adventofcode.com/2017/day/18 Day 18: Duet>
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day18 (day18a, day18b) where
 
+import Control.Applicative (liftA2)
 import Control.Arrow (first)
-import Control.Monad (liftM2)
 import Control.Monad.Except (catchError, runExceptT, throwError)
 import Control.Monad.State (evalState, get, modify, put)
 import Control.Monad.Writer (execWriterT, tell)
 import Data.Array (Array, (!), bounds, listArray)
-import Data.IORef (modifyIORef', newIORef, readIORef)
 import Data.Int (Int64)
 import Data.Ix (Ix, inRange)
 import qualified Data.Map.Lazy as Map (empty, insert, lookup, singleton)
 import Data.Map.Lazy (Map)
-import Data.Maybe (catMaybes, fromJust, fromMaybe)
+import Data.Maybe (catMaybes, fromJust, fromMaybe, listToMaybe)
 import Data.Monoid (First(..))
-import Text.Read (lex)
 
 -- | A single instruction.
 --
@@ -27,10 +25,7 @@ import Text.Read (lex)
 data Ins reg val
   = Rcv reg
   | Snd (Either reg val)
-  | Set reg (Either reg val)
-  | Add reg (Either reg val)
-  | Mul reg (Either reg val)
-  | Mod reg (Either reg val)
+  | Op (val -> val -> val) reg (Either reg val)
   | Jgz (Either reg val) (Either reg val)
 
 -- | A specification for how to run a machine.
@@ -50,18 +45,22 @@ data MachineState pc reg val
     -- | The machine is stopped.
   | MachineTerminated
 
+-- | Read a value if possible.
+readMaybe :: (Read a) => String -> Maybe a
+readMaybe s = listToMaybe [a | (a, "") <- reads s]
+
 -- | Parse an assembly listing to instructions.
-parse :: (Read a) => String -> [Ins String a]
-parse = head . mapM parseIns . lines where
-    parseIns line = lex line >>= \case
-        ("rcv", s) -> [Rcv reg | (reg, "") <- lex s]
-        ("snd", s) -> [Snd val | (val, "") <- lex' s]
-        ("set", s) -> [Set reg val | (reg, r) <- lex s, (val, "") <- lex' r]
-        ("add", s) -> [Add reg val | (reg, r) <- lex s, (val, "") <- lex' r]
-        ("mul", s) -> [Mul reg val | (reg, r) <- lex s, (val, "") <- lex' r]
-        ("mod", s) -> [Mod reg val | (reg, r) <- lex s, (val, "") <- lex' r]
-        ("jgz", s) -> [Jgz cnd jmp | (cnd, r) <- lex' s, (jmp, "") <- lex' r]
-    lex' s = (first Right <$> reads s) ++ (first Left <$> lex s)
+parse :: (Integral a, Read a) => String -> [Ins String a]
+parse = map parseIns . lines where
+    parseIns line = case words line of
+        ["rcv", reg] -> Rcv reg
+        ["snd", val] -> Snd (read' val)
+        ["set", reg, val] -> Op (flip const) reg (read' val)
+        ["add", reg, val] -> Op (+) reg (read' val)
+        ["mul", reg, val] -> Op (*) reg (read' val)
+        ["mod", reg, val] -> Op mod reg (read' val)
+        ["jgz", cnd, jmp] -> Jgz (read' cnd) (read' jmp)
+    read' s = maybe (Left s) Right $ readMaybe s
 
 -- | Evaluate a single instruction.
 step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) =>
@@ -72,17 +71,13 @@ step MachineSpec {..} s@MachineState {..} = case program ! pc of
         val <- recv $ loadReg reg
         check s {pc = pc + 1, regs = Map.insert reg val regs}
     Snd (load -> val) -> send val >> check s {pc = pc + 1}
-    Set reg val -> mut (flip const) reg val
-    Add reg val -> mut (+) reg val
-    Mul reg val -> mut (*) reg val
-    Mod reg val -> mut mod reg val
+    Op f reg@(loadReg -> src) (load -> val) ->
+        check s {pc = pc + 1, regs = Map.insert reg (f src val) regs}
     Jgz (load -> cnd) (load -> jmp) ->
         check s {pc = pc + (if cnd > 0 then fromIntegral jmp else 1)}
   where
     loadReg = fromMaybe 0 . flip Map.lookup regs
     load = either loadReg id
-    mut op reg@(loadReg -> src) (load -> val) =
-        check s {pc = pc + 1, regs = Map.insert reg (op src val) regs}
     check MachineState {pc} | not (inRange (bounds program) pc) =
         pure MachineTerminated
     check state = pure state
@@ -103,7 +98,7 @@ day18a input = fromJust . getFirst . flip evalState 0 . execWriterT $
       , send = put
       , recv = \case
             0 -> pure 0
-            _ -> get >>= liftM2 (<$) id (tell . First . Just)
+            _ -> get >>= liftA2 (<$) id (tell . First . Just)
       }
 
 day18b :: String -> Int
