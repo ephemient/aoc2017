@@ -69,10 +69,10 @@ day20a input = fst $ minimumBy (comparing $ manhattan . pos . snd) points'''
     points = zip [0..] $ parse input
     minAcc = minimum $ manhattan . acc . snd <$> points
     points' = filter ((== minAcc) . manhattan . acc . snd) points
-    minVel = minimum $ manhattan . vel . snd <$> points'
-    points'' = filter ((== minAcc) . manhattan . acc . snd) points'
-    points''':_ = dropWhile (any $ not . signumsMatch . snd) $
-                  iterate (map $ second step) points''
+    points'':_ = dropWhile (any $ not . signumsMatch . snd) $
+                 iterate (map $ second step) points'
+    minVel = minimum $ manhattan . vel . snd <$> points''
+    points''' = filter ((== minVel) . manhattan . vel . snd) points''
 
 day20b :: String -> [Int]
 day20b =
