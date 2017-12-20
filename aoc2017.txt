@@ -197,10 +197,7 @@ module Day18
 data Ins reg val
 Rcv :: reg -> Ins reg val
 Snd :: (Either reg val) -> Ins reg val
-Set :: reg -> (Either reg val) -> Ins reg val
-Add :: reg -> (Either reg val) -> Ins reg val
-Mul :: reg -> (Either reg val) -> Ins reg val
-Mod :: reg -> (Either reg val) -> Ins reg val
+Op :: (val -> val -> val) -> reg -> (Either reg val) -> Ins reg val
 Jgz :: (Either reg val) -> (Either reg val) -> Ins reg val
 
 -- | A specification for how to run a machine.
@@ -231,8 +228,11 @@ MachineState :: pc -> Map reg val -> MachineState pc reg val
 -- | The machine is stopped.
 MachineTerminated :: MachineState pc reg val
 
+-- | Read a value if possible.
+readMaybe :: (Read a) => String -> Maybe a
+
 -- | Parse an assembly listing to instructions.
-parse :: (Read a) => String -> [Ins String a]
+parse :: (Integral a, Read a) => String -> [Ins String a]
 
 -- | Evaluate a single instruction.
 step :: (Monad m, Ix pc, Num pc, Ord reg, Integral val, Ord val) => MachineSpec m pc reg val -> MachineState pc reg val -> m (MachineState pc reg val)
