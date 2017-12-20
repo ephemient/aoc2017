@@ -4,7 +4,7 @@ Description:    <http://adventofcode.com/2017/day/20 Day 20: Particle Stream>
 -}
 {-# LANGUAGE NamedFieldPuns, RecordWildCards, ViewPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
-module Day20 (collide, day20a, day20b, parse, step) where
+module Day20 (day20a, day20b) where
 
 import Control.Arrow (second)
 import Data.Function (on)
