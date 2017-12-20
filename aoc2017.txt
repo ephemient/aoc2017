@@ -299,6 +299,9 @@ Point :: !(Vec3 a) -> !(Vec3 a) -> !(Vec3 a) -> Point a
 [vel] :: Point a -> !(Vec3 a)
 [acc] :: Point a -> !(Vec3 a)
 
+-- | Read non-overlapping substrings.
+readMany :: (Read a) => String -> [a]
+
 -- | Reads points.
 parse :: (Read a) => String -> [Point a]
 
