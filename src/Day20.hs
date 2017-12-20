@@ -8,9 +8,8 @@ module Day20 (day20a, day20b) where
 
 import Control.Arrow (second)
 import Data.Function (on)
-import Data.List (find, groupBy, minimumBy, sortOn, tails)
-import qualified Data.Map.Strict as Map
-import Data.Maybe (fromJust)
+import Data.List (groupBy, minimumBy, sortOn, tails)
+import qualified Data.Map.Strict as Map (fromListWith, lookup)
 import Data.Ord (comparing)
 
 -- | A 3D vector.
@@ -19,14 +18,15 @@ data Vec3 a = Vec3 {x :: !a, y :: !a, z :: !a} deriving (Eq, Ord)
 -- | A point with position, velocity, and acceleration in 3D space.
 data Point a = Point {pos :: !(Vec3 a), vel :: !(Vec3 a), acc :: !(Vec3 a)}
 
+-- | Read non-overlapping substrings.
+readMany :: (Read a) => String -> [a]
+readMany s = take 1 (tails s >>= reads) >>= uncurry ((. readMany) . (:))
+
 -- | Reads points.
 parse :: (Read a) => String -> [Point a]
 parse = map parseLine . lines where
-    parseLine line = Point {..} where
-        [parseVec3 -> pos, parseVec3 -> vel, parseVec3 -> acc] = words line
-    parseVec3 s = Vec3 {..} where
-        t = takeWhile (/= '>') . tail $ dropWhile (/= '<') s
-        (x, y, z) = read $ '(' : t ++ ")"
+    parseLine (readMany -> [px, py, pz, vx, vy, vz, ax, ay, az]) =
+        Point {pos = Vec3 px py pz, vel = Vec3 vx vy vz, acc = Vec3 ax ay az}
 
 -- | Pointwise addition.
 (*+*) :: (Num a) => Vec3 a -> Vec3 a -> Vec3 a
@@ -76,7 +76,7 @@ day20a input = fst $ minimumBy (comparing $ manhattan . pos . snd) points'''
 
 day20b :: String -> [Int]
 day20b =
-    map fst . fromJust . find (done . map snd) .
+    map fst . head . filter (done . map snd) .
     iterate (collide (pos . snd) . map (second step)) .
     sortOn (manhattan . acc . snd) . zip [0..] . parse where
     done points = all signumsMatch points && and
