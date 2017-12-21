@@ -337,7 +337,7 @@ module Day21
 array2D :: (IArray a e) => [[e]] -> a (Int, Int) e
 
 -- | 8 affine transformations.
-rotations :: (IArray a e, Ix i, Num i) => [a (i, i) e -> a (i, i) e]
+transforms :: (IArray a e, Ix i, Num i) => [a (i, i) e -> a (i, i) e]
 
 -- | Parse a list of enhancements.
 parse :: (IArray a Bool, Ord (a (Int, Int) Bool)) => String -> Map (a (Int, Int) Bool) (a (Int, Int) Bool)
@@ -350,7 +350,7 @@ step :: (IArray a e, Ord (a (Int, Int) e), MonadState (Map (a (Int, Int) e) (a (
 
 -- | <tt>day21 n input</tt> returns the number of bits set in the
 --   <tt>n</tt>-th <a>step</a> of transforming the <a>start</a> glider
---   using <a>parse</a> rules.
+--   using <a>parse</a> rules from <tt>input</tt>.
 day21 :: Int -> String -> Int
 day21a :: String -> Int
 day21b :: String -> Int
