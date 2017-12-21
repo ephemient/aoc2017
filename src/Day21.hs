@@ -8,7 +8,7 @@ module Day21 (day21, day21a, day21b) where
 
 import Control.Arrow ((***), first, second)
 import Control.Monad.State.Strict (MonadState, evalState, get, modify)
-import Data.Array.IArray (IArray, (!), array, assocs, bounds, elems, ixmap)
+import Data.Array.IArray (IArray, array, assocs, bounds, elems, ixmap)
 import Data.Array.Unboxed (UArray)
 import Data.Ix (Ix, rangeSize)
 import Data.List (foldl', mapAccumL)
@@ -50,8 +50,8 @@ start = array2D $ map (== '#') <$>
   ]
 
 -- | Expand sub-squares according to the rules map.
-step :: (IArray a e, Ord (a (Int, Int) e), Show (a (Int, Int) e),
-        MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m, Show (a (Int, Int) e)) =>
+step :: (IArray a e, Ord (a (Int, Int) e),
+        MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m) =>
     a (Int, Int) e -> m (a (Int, Int) e)
 step grid = Map.lookup grid <$> get >>= \case
     Just art -> pure art
