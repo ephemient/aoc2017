@@ -11,7 +11,8 @@ import Data.Bits (Bits, xor)
 import Data.Bool (bool)
 import Data.Char (ord)
 import Data.Ix (Ix, inRange, index, rangeSize)
-import Data.List (foldl', foldl1', replicate, scanl', unfoldr)
+import Data.List (foldl', foldl1', replicate, scanl')
+import Data.List.Split (chunksOf)
 import Data.Word (Word8)
 import Text.Printf (printf)
 
@@ -47,8 +48,7 @@ deriveKey = concat . replicate 64 . (++ [17, 31, 73, 47, 23]) . map ord
 
 -- | Reduce consecutive groups of a fixed length by @xor@.
 xorEach :: (IArray a e, Ix i, Bits e) => Int -> a i e -> [e]
-xorEach n = fmap (foldl1' xor) . unfoldr maybeSplitAt . elems where
-    maybeSplitAt = bool Nothing . Just . splitAt n <*> not . null
+xorEach n = fmap (foldl1' xor) . chunksOf n . elems
 
 -- | Deriving a key from a string by using its codepoints plus some magic
 -- numbers, 'hash' @[0..255]@ 64 times, then 'xor' together each group of 16.
