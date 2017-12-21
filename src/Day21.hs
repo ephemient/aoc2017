@@ -24,8 +24,8 @@ array2D grid = array ((0, 0), (w - 1, h - 1)) assocs where
     assocs = [((x, y), e) | (y, row) <- zip [0..] grid, (x, e) <- zip [0..] row]
 
 -- | 8 affine transformations.
-rotations :: (IArray a e, Ix i, Num i) => [a (i, i) e -> a (i, i) e]
-rotations = [id, f, g, f . g, t, t . f, t . g, t . f . g] where
+transforms :: (IArray a e, Ix i, Num i) => [a (i, i) e -> a (i, i) e]
+transforms = [id, f, g, f . g, t, t . f, t . g, t . f . g] where
     f a = let b@((_, l), (_, h)) = bounds a in ixmap b (second (l + h -)) a
     g a = let b@((l, _), (h, _)) = bounds a in ixmap b (first (l + h -)) a
     t a = let (l, h) = bounds a in ixmap (swap l, swap h) swap a
@@ -35,10 +35,10 @@ parse :: (IArray a Bool, Ord (a (Int, Int) Bool)) =>
     String -> Map (a (Int, Int) Bool) (a (Int, Int) Bool)
 parse = Map.fromList . concatMap parseLine . lines where
     parseLine s = let [a, "=>", b] = words s in
-      [ (rot a', b')
+      [ (transform a', b')
       | let a' = array2D $ map (== '#') <$> splitOn "/" a
       , let b' = array2D $ map (== '#') <$> splitOn "/" b
-      , rot <- rotations
+      , transform <- transforms
       ]
 
 -- | The glider.
@@ -69,8 +69,7 @@ step grid = Map.lookup grid <$> get >>= \case
         (h', unzip -> (foldl' max 0 -> w', concat -> grids)) =
             mapAccumL assembleRow 0 $ chunksOf n parts
         result = array ((0, 0), (w' - 1, h' - 1)) $ grids >>= assocs
-        insertAll =
-            foldr (.) id [Map.insert (rot grid) result | rot <- rotations]
+        insertAll = foldr ((.) . (`Map.insert` result) . ($ grid)) id transforms
     assembleRow top row = (top + h', mapAccumL (shiftCell top) 0 row) where
         h' = foldl' max 0 $ rangeSize . (snd *** snd) . bounds <$> row
     shiftCell top left cell =
@@ -81,7 +80,7 @@ step grid = Map.lookup grid <$> get >>= \case
         shift = subtract (left - lx') *** subtract (top - ly')
 
 -- | @day21 n input@ returns the number of bits set in the @n@-th 'step' of
--- transforming the 'start' glider using 'parse' rules.
+-- transforming the 'start' glider using 'parse' rules from @input@.
 day21 :: Int -> String -> Int
 day21 n input = evalState (loop n start) (parse input) where
     loop 0 art = pure . length . filter id . elems $ art
