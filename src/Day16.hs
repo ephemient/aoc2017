@@ -11,16 +11,15 @@ import Data.Array.Unboxed (UArray)
 import Data.Bool (bool)
 import Data.Char (chr, isSpace, ord)
 import Data.Ix (range)
-import Data.List (foldl', unfoldr)
+import Data.List (foldl')
+import Data.List.Split (wordsBy)
 
 -- | A dance move.
 data Move i e = Spin i | Exchange i i | Partner e e
 
 -- | Split words by whitespaces or commas.
 words' :: String -> [String]
-words' = unfoldr $ bool Nothing . Just . breakDelim <*> not . all delim where
-    delim c = c == ',' || isSpace c
-    breakDelim = break delim . dropWhile delim
+words' = wordsBy $ \c -> c == ',' || isSpace c
 
 -- | Parse a list of dance moves.
 parse :: String -> [Move Int Char]
