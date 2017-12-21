@@ -346,7 +346,7 @@ parse :: (IArray a Bool, Ord (a (Int, Int) Bool)) => String -> Map (a (Int, Int)
 start :: UArray (Int, Int) Bool
 
 -- | Expand sub-squares according to the rules map.
-step :: (IArray a e, Ord (a (Int, Int) e), Show (a (Int, Int) e), MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m, Show (a (Int, Int) e)) => a (Int, Int) e -> m (a (Int, Int) e)
+step :: (IArray a e, Ord (a (Int, Int) e), MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m) => a (Int, Int) e -> m (a (Int, Int) e)
 
 -- | <tt>day21 n input</tt> returns the number of bits set in the
 --   <tt>n</tt>-th <a>step</a> of transforming the <a>start</a> glider
