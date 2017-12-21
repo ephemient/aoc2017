@@ -153,6 +153,10 @@ import Day19 (day19a, day19b)
 ```haskell
 import Day20 (day20a, day20b)
 ```
+## [Day 21: Fractal Art](/src/Day21.hs)
+```haskell
+import Day21 (day21a, day21b)
+```
 
 ---
 
@@ -206,4 +210,5 @@ main = do
     run 18 getDayInput print [fromIntegral . day18a, day18b]
     run 19 getDayInput putStrLn [day19a, show . day19b]
     run 20 getDayInput print [day20a, length . day20b]
+    run 21 getDayInput print [day21a, day21b]
 ```
