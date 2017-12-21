@@ -2,19 +2,19 @@
 Module:         Day21
 Description:    <http://adventofcode.com/2017/day/21 Day 21: Fractal Art>
 -}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts, LambdaCase, PatternGuards, ViewPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day21 (day21, day21a, day21b) where
 
 import Control.Arrow ((***), first, second)
-import Data.Array.IArray (IArray, array, assocs, bounds, elems, ixmap)
+import Control.Monad.State.Strict (MonadState, evalState, get, modify)
+import Data.Array.IArray (IArray, (!), array, assocs, bounds, elems, ixmap)
 import Data.Array.Unboxed (UArray)
 import Data.Ix (Ix, rangeSize)
-import Data.List (foldl')
-import Data.List.Split (splitOn)
-import qualified Data.Map.Strict as Map (fromList, lookup)
+import Data.List (foldl', mapAccumL)
+import Data.List.Split (chunksOf, splitOn)
+import qualified Data.Map.Strict as Map (fromList, insert, lookup)
 import Data.Map.Strict (Map)
-import Data.Maybe (maybeToList)
 import Data.Tuple (swap)
 
 -- | Converts to a 2-D array with lower bound @(0,0)@.
@@ -50,36 +50,42 @@ start = array2D $ map (== '#') <$>
   ]
 
 -- | Expand sub-squares according to the rules map.
-step :: (IArray a e, Ord (a (Int, Int) e), Show (a (Int, Int) e)) =>
-    Map (a (Int, Int) e) (a (Int, Int) e) -> a (Int, Int) e -> a (Int, Int) e
-step rules grid = head $ do
-    let ((lx, ly), (hx, hy)) = bounds grid
-        (w, h) = (rangeSize (lx, hx), rangeSize (ly, hy))
-    (dx, dy, mx, my) <- [(2, 2, 3, 3), (3, 3, 4, 4)]
-    (qx, 0) <- [w `divMod` dx]
-    (qy, 0) <- [h `divMod` dy]
-    let bounds' = ((0, 0), (qx * mx - 1, qy * my - 1))
-    maybeToList $ array bounds' . concatMap assocs <$> sequence
-      [ Map.lookup part rules >>= shiftBounds
-      | i <- [0 .. qx - 1]
-      , j <- [0 .. qy - 1]
-      , let (x, y) = (lx + i * dx, ly + j * dy)
-            (x', y') = (i * mx, j * my)
-            part = ixmap ((0, 0), (dx - 1, dy - 1)) ((x +) *** (y +)) grid
-            shiftBounds arr
-              | rangeSize (lx', hx') == mx
-              , rangeSize (lx', hx') == mx
-              = Just $ ixmap ((x', y'), (x' + mx - 1, y' + my - 1))
-                    (subtract (x' - lx') *** subtract (y' - ly')) arr
-              | otherwise = Nothing
-              where ((lx', ly'), (hx', hy')) = bounds arr
+step :: (IArray a e, Ord (a (Int, Int) e), Show (a (Int, Int) e),
+        MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m, Show (a (Int, Int) e)) =>
+    a (Int, Int) e -> m (a (Int, Int) e)
+step grid = Map.lookup grid <$> get >>= \case
+    Just art -> pure art
+    _ | ((qx, 0), (qy, 0)) <- (w `divMod` 3, h `divMod` 3) -> divide 3 qx qy
+      | ((qx, 0), (qy, 0)) <- (w `divMod` 2, h `divMod` 2) -> divide 2 qx qy
+  where
+    ((lx, ly), (hx, hy)) = bounds grid
+    (w, h) = (rangeSize (lx, hx), rangeSize (ly, hy))
+    divide n qx qy = assemble n =<< sequence
+      [ step $ ixmap ((0, 0), (qx - 1, qy - 1)) ((x - lx +) *** (y - ly +)) grid
+      | y <- [0, qy .. h - 1]
+      , x <- [0, qx .. w - 1]
       ]
+    assemble n parts = result <$ modify insertAll where
+        (h', unzip -> (foldl' max 0 -> w', concat -> grids)) =
+            mapAccumL assembleRow 0 $ chunksOf n parts
+        result = array ((0, 0), (w' - 1, h' - 1)) $ grids >>= assocs
+        insertAll =
+            foldr (.) id [Map.insert (rot grid) result | rot <- rotations]
+    assembleRow top row = (top + h', mapAccumL (shiftCell top) 0 row) where
+        h' = foldl' max 0 $ rangeSize . (snd *** snd) . bounds <$> row
+    shiftCell top left cell =
+        (left + w',
+         ixmap ((left, top), (left + w' - 1, top + h' - 1)) shift cell) where
+        ((lx', ly'), (hx', hy')) = bounds cell
+        (w', h') = (rangeSize (lx', hx'), rangeSize (ly', hy'))
+        shift = subtract (left - lx') *** subtract (top - ly')
 
 -- | @day21 n input@ returns the number of bits set in the @n@-th 'step' of
 -- transforming the 'start' glider using 'parse' rules.
 day21 :: Int -> String -> Int
-day21 n input =
-    length . filter id . elems $ iterate (step $ parse input) start !! n
+day21 n input = evalState (loop n start) (parse input) where
+    loop 0 art = pure . length . filter id . elems $ art
+    loop n art = step art >>= loop (n - 1)
 
 day21a :: String -> Int
 day21a = day21 5
