@@ -372,16 +372,6 @@ W :: S
 I :: S
 F :: S
 
--- | Viral state
-data V k a b
-V :: Map k a -> b -> k -> V k a b
-[nodes] :: V k a b -> Map k a
-[dir] :: V k a b -> b
-[pos] :: V k a b -> k
-
--- | <tt>Just . succ</tt> if in bounds, <tt>Nothing</tt> if not.
-maybeNext :: (Bounded a, Enum a, Eq a) => a -> Maybe a
-
 -- | <a>succ</a> with wraparound.
 next :: (Bounded a, Enum a, Eq a) => a -> a
 
@@ -391,16 +381,12 @@ prev :: (Bounded a, Enum a, Eq a) => a -> a
 -- | Moves a Cartesian coordinate by one step in a direction.
 move :: (Num a, Num b) => (a, b) -> O -> (a, b)
 
--- | Parses a string as a 2-D grid centered around <tt>(0, 0)</tt>, mapping
---   positions with a <tt><tt>#</tt></tt> character to a given value.
-parse :: a -> String -> Map (Int, Int) a
-
--- | At a viral state, return the current activity and the next viral
---   state.
-step :: (Ord k) => (a -> b -> b) -> (k -> b -> k) -> (a -> Maybe a) -> a -> V k a b -> (Maybe a, V k a b)
+-- | Parses a string as a 2-D grid centered around <tt>(0, 0)</tt>,
+--   returning positions with a <tt><tt>#</tt></tt> character.
+parse :: String -> [(Int, Int)]
 
 -- | Returns all viral activity from an initial state.
-day22 :: a -> (a -> O -> O) -> (a -> Maybe a) -> a -> String -> [Maybe a]
+day22 :: (Eq a) => a -> (a -> O -> O) -> (a -> a) -> a -> Int -> [(Int, Int)] -> Int
 day22a :: String -> Int
 day22b :: String -> Int
 instance GHC.Classes.Eq Day22.S
