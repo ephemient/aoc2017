@@ -157,6 +157,10 @@ import Day20 (day20a, day20b)
 ```haskell
 import Day21 (day21a, day21b)
 ```
+## [Day 22: Sporifica Virus](/src/Day22.hs)
+```haskell
+import Day22 (day22a, day22b)
+```
 
 ---
 
@@ -211,4 +215,5 @@ main = do
     run 19 getDayInput putStrLn [day19a, show . day19b]
     run 20 getDayInput print [day20a, length . day20b]
     run 21 getDayInput print [day21a, day21b]
+    run 22 getDayInput print [day22a, day22b]
 ```
