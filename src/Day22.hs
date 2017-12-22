@@ -13,17 +13,17 @@ import Data.Map.Lazy (Map)
 import Data.Maybe (fromMaybe)
 
 -- | A cardinal direction.
-data O = U | R | D | L deriving (Bounded, Enum, Eq, Ord, Show)
+data O = U | R | D | L deriving (Bounded, Enum, Eq)
 
 -- | Node state.
-data S = C | W | I | F deriving (Bounded, Enum, Eq, Ord, Show)
+data S = C | W | I | F deriving (Bounded, Enum, Eq)
 
 -- | Viral state
 data V k a b = V {nodes :: Map k a, dir :: b, pos :: k}
 
 -- | @Just . succ@ if in bounds, @Nothing@ if not.
 maybeNext :: (Bounded a, Enum a, Eq a) => a -> Maybe a
-maybeNext a | a == maxBound = Nothing | otherwise = Just $ succ a
+maybeNext a = if a == maxBound then Nothing else Just $ succ a
 
 -- | 'succ' with wraparound.
 next :: (Bounded a, Enum a, Eq a) => a -> a
@@ -31,7 +31,7 @@ next = fromMaybe minBound . maybeNext
 
 -- | 'pred' with wraparound.
 prev :: (Bounded a, Enum a, Eq a) => a -> a
-prev a | a == minBound = maxBound | otherwise = pred a
+prev a = if a == minBound then maxBound else pred a
 
 -- | Moves a Cartesian coordinate by one step in a direction.
 move :: (Num a, Num b) => (a, b) -> O -> (a, b)
