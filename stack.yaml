@@ -37,6 +37,7 @@ resolver: nightly-2017-11-25
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - .
+- packages/growarray
 - packages/lcg
 - packages/morton
 # Dependency packages to be pulled from upstream that are not in the resolver
