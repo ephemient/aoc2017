@@ -379,14 +379,14 @@ next :: (Bounded a, Enum a, Eq a) => a -> a
 prev :: (Bounded a, Enum a, Eq a) => a -> a
 
 -- | Moves a Cartesian coordinate by one step in a direction.
-move :: (Num a, Num b) => (a, b) -> O -> (a, b)
+move :: O -> Z -> Z
 
 -- | Parses a string as a 2-D grid centered around <tt>(0, 0)</tt>,
 --   returning positions with a <tt><tt>#</tt></tt> character.
-parse :: String -> [(Int, Int)]
+parse :: String -> [Z]
 
 -- | Returns all viral activity from an initial state.
-day22 :: (Eq a) => a -> (a -> O -> O) -> (a -> a) -> a -> Int -> [(Int, Int)] -> Int
+day22 :: (Enum a, Eq a) => a -> (a -> O -> O) -> (a -> a) -> a -> Int -> [Z] -> Int
 day22a :: String -> Int
 day22b :: String -> Int
 instance GHC.Classes.Eq Day22.S
