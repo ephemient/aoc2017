@@ -24,6 +24,7 @@ library
                      , lcg
                      , array
                      , containers
+                     , hashtables
                      , mtl
                      , parallel
                      , split

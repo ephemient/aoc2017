@@ -2,14 +2,13 @@
 Module:         Day22
 Description:    <http://adventofcode.com/2017/day/22 Day 22: Sporifica Virus>
 -}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE BangPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day22 (day22a, day22b) where
 
+import Control.Monad.ST (runST)
 import Data.Bool (bool)
-import Data.List (unfoldr)
-import qualified Data.Map.Lazy as Map (delete, findWithDefault, fromList, insert)
-import Data.Map.Lazy (Map)
+import qualified Data.HashTable.ST.Basic as HashTable (insert, lookup, new)
 import Data.Maybe (fromMaybe)
 
 -- | A cardinal direction.
@@ -18,16 +17,9 @@ data O = U | R | D | L deriving (Bounded, Enum, Eq)
 -- | Node state.
 data S = C | W | I | F deriving (Bounded, Enum, Eq)
 
--- | Viral state
-data V k a b = V {nodes :: Map k a, dir :: b, pos :: k}
-
--- | @Just . succ@ if in bounds, @Nothing@ if not.
-maybeNext :: (Bounded a, Enum a, Eq a) => a -> Maybe a
-maybeNext a = if a == maxBound then Nothing else Just $ succ a
-
 -- | 'succ' with wraparound.
 next :: (Bounded a, Enum a, Eq a) => a -> a
-next = fromMaybe minBound . maybeNext
+next a = if a == maxBound then minBound else succ a
 
 -- | 'pred' with wraparound.
 prev :: (Bounded a, Enum a, Eq a) => a -> a
@@ -40,39 +32,38 @@ move (x, y) R = (x + 1, y)
 move (x, y) D = (x, y + 1)
 move (x, y) L = (x - 1, y)
 
--- | Parses a string as a 2-D grid centered around @(0, 0)@, mapping positions
--- with a @'#'@ character to a given value.
-parse :: a -> String -> Map (Int, Int) a
-parse a s = Map.fromList
-  [ ((x, y), a)
+-- | Parses a string as a 2-D grid centered around @(0, 0)@, returning positions
+-- with a @'#'@ character.
+parse :: String -> [(Int, Int)]
+parse s =
+  [ (x, y)
   | let h = length $ lines s
   , (y, line) <- zip [- h `div` 2 ..] $ lines s
   , let w = length line
   , (x, '#') <- zip [- w `div` 2 ..] line
   ]
 
--- | At a viral state, return the current activity and the next viral state.
-step :: (Ord k) => (a -> b -> b) -> (k -> b -> k) -> (a -> Maybe a) -> a ->
-    V k a b -> (Maybe a, V k a b)
-step turn move mut def V {..} = (a', V nodes' dir' pos') where
-    a = Map.findWithDefault def pos nodes
-    a' = mut a
-    nodes' = maybe Map.delete (flip Map.insert) a' pos nodes
-    dir' = turn a dir
-    pos' = move pos dir'
-
 -- | Returns all viral activity from an initial state.
-day22 :: a -> (a -> O -> O) -> (a -> Maybe a) -> a -> String -> [Maybe a]
-day22 a turn mut def input =
-    unfoldr (Just . step turn move mut def) $ V (parse a input) U (0, 0)
+day22 :: (Eq a) =>
+    a -> (a -> O -> O) -> (a -> a) -> a -> Int -> [(Int, Int)] -> Int
+day22 infected turn mut def n input = runST $ do
+    grid <- HashTable.new
+    mapM_ (HashTable.insert grid `flip` infected) input
+    let loop 0 k _ _ = pure k
+        loop n !k dir pos = do
+            a <- fromMaybe def <$> HashTable.lookup grid pos
+            let a' = mut a
+                dir' = turn a dir
+                pos' = move pos dir'
+            HashTable.insert grid pos a'
+            loop (n - 1) (if a' == infected then k + 1 else k) dir' pos'
+    loop n 0 U (0, 0)
 
 day22a :: String -> Int
-day22a = length . filter (== Just True) . take 10000 .
-         day22 True (bool prev next) maybeNext False
+day22a = day22 True (bool prev next) next False 10000 . parse
 
 day22b :: String -> Int
-day22b = length . filter (== Just I) . take 10000000 .
-         day22 I turn maybeNext C where
+day22b = day22 I turn next C 10000000 . parse where
     turn C = prev
     turn W = id
     turn I = next
