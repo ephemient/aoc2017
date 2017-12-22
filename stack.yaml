@@ -38,6 +38,7 @@ resolver: nightly-2017-11-25
 packages:
 - .
 - packages/lcg
+- packages/morton
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 # extra-deps: []
