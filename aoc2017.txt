@@ -397,6 +397,51 @@ instance GHC.Enum.Enum Day22.O
 instance GHC.Enum.Bounded Day22.O
 
 
+module Day23
+
+-- | A single instruction.
+--   
+--   <a>Either</a> represents either a register reference or an immediate
+--   value.
+data Ins reg imm
+Set :: reg -> Either reg imm -> Ins reg imm
+[reg] :: Ins reg imm -> reg
+[val] :: Ins reg imm -> Either reg imm
+Sub :: reg -> Either reg imm -> Ins reg imm
+[reg] :: Ins reg imm -> reg
+[val] :: Ins reg imm -> Either reg imm
+Mul :: reg -> Either reg imm -> Ins reg imm
+[reg] :: Ins reg imm -> reg
+[val] :: Ins reg imm -> Either reg imm
+Jnz :: Either reg imm -> Either reg imm -> Ins reg imm
+[cnd] :: Ins reg imm -> Either reg imm
+[jmp] :: Ins reg imm -> Either reg imm
+
+-- | The current state of a machine.
+data State a reg imm
+State :: Int -> a reg imm -> State a reg imm
+[pc] :: State a reg imm -> Int
+[regs] :: State a reg imm -> a reg imm
+
+-- | Parses an immediate value or a single character register name.
+parseVal :: (Read imm) => String -> Either Char imm
+
+-- | Parses an assembly listing to instructions.
+parse :: (Read imm) => String -> [Ins Char imm]
+
+-- | Evaluates a single instruction.
+step :: (IArray a imm, Ix reg, Integral imm) => [Ins reg imm] -> State a reg imm -> Maybe (State a reg imm)
+
+-- | Evaluates the <tt>f = 0 if !isPrime(b)</tt> sequence, or a single
+--   instruction.
+stepOptimized :: (IArray a imm, Integral imm) => [Ins Char imm] -> State a Char imm -> Maybe (State a Char imm)
+
+-- | Iterates a function until <a>Nothing</a>.
+iterateMaybe :: (a -> Maybe a) -> Maybe a -> [a]
+day23a :: String -> Int
+day23b :: String -> Int
+
+
 module Day3
 day3a :: Int -> Int
 day3b :: Int -> Int
