@@ -333,20 +333,17 @@ instance GHC.Classes.Eq a => GHC.Classes.Eq (Day20.Vec3 a)
 
 module Day21
 
--- | Converts to a 2-D array with lower bound <tt>(0,0)</tt>.
-array2D :: (IArray a e) => [[e]] -> a (Int, Int) e
-
 -- | 8 affine transformations.
-transforms :: (IArray a e, Ix i, Num i) => [a (i, i) e -> a (i, i) e]
+transforms :: [[[a]] -> [[a]]]
 
 -- | Parse a list of enhancements.
-parse :: (IArray a Bool, Ord (a (Int, Int) Bool)) => String -> Map (a (Int, Int) Bool) (a (Int, Int) Bool)
+parse :: String -> Map [String] [String]
 
 -- | The glider.
-start :: UArray (Int, Int) Bool
+start :: [String]
 
 -- | Expand sub-squares according to the rules map.
-step :: (IArray a e, Ord (a (Int, Int) e), MonadState (Map (a (Int, Int) e) (a (Int, Int) e)) m) => a (Int, Int) e -> m (a (Int, Int) e)
+step :: (Ord a) => Map [[a]] [[a]] -> [[a]] -> [[a]]
 
 -- | <tt>day21 n input</tt> returns the number of bits set in the
 --   <tt>n</tt>-th <a>step</a> of transforming the <a>start</a> glider
