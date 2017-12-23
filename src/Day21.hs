@@ -7,9 +7,8 @@ module Day21 (day21, day21a, day21b) where
 
 import Data.List (transpose)
 import Data.List.Split (chunksOf, splitOn)
-import qualified Data.Map.Lazy as Map (fromList, lookup)
+import qualified Data.Map.Lazy as Map ((!), fromList)
 import Data.Map.Lazy (Map)
-import Data.Maybe (fromJust)
 
 -- | 8 affine transformations.
 transforms :: [[[a]] -> [[a]]]
@@ -19,22 +18,22 @@ transforms = [id, f, g, f . g, t, t . f, t . g, t . f . g] where
     t = transpose
 
 -- | Parse a list of enhancements.
-parse :: String -> Map [String] [String]
+parse :: String -> Map [[Bool]] [[Bool]]
 parse = Map.fromList . concatMap parseLine . lines where
     parseLine s = let [a, "=>", b] = words s in
       [ (transform a', b')
-      | let a' = splitOn "/" a
-      , let b' = splitOn "/" b
+      | let a' = map (== '#') <$> splitOn "/" a
+      , let b' = map (== '#') <$> splitOn "/" b
       , transform <- transforms
       ]
 
 -- | The glider.
-start :: [String]
-start = splitOn "/" ".#./..#/###"
+start :: [[Bool]]
+start = map (== '#') <$> splitOn "/" ".#./..#/###"
 
 -- | Expand sub-squares according to the rules map.
 step :: (Ord a) => Map [[a]] [[a]] -> [[a]] -> [[a]]
-step rules grid = assemble . fromJust $ mapM (`Map.lookup` rules) exploded where
+step rules grid = assemble $ map (rules Map.!) exploded where
     (d, n):_ = [(d, n) | d <- [2..], (n, 0) <- [length grid `divMod` d]]
     exploded = chunksOf d grid >>= transpose . map (chunksOf d)
     assemble parts = chunksOf n parts >>= map concat . transpose
@@ -43,7 +42,7 @@ step rules grid = assemble . fromJust $ mapM (`Map.lookup` rules) exploded where
 -- transforming the 'start' glider using 'parse' rules from @input@.
 day21 :: Int -> String -> Int
 day21 n input =
-    length . filter (== '#') . concat $ iterate (step $ parse input) start !! n
+    length . filter id . concat $ iterate (step $ parse input) start !! n
 
 day21a :: String -> Int
 day21a = day21 5
