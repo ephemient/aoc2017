@@ -161,6 +161,10 @@ import Day21 (day21a, day21b)
 ```haskell
 import Day22 (day22a, day22b)
 ```
+## [Day 23: Coprocessor Conflagration](/src/Day23.hs)
+```haskell
+import Day23 (day23a, day23b)
+```
 
 ---
 
@@ -216,4 +220,5 @@ main = do
     run 20 getDayInput print [day20a, length . day20b]
     run 21 getDayInput print [day21a, day21b]
     run 22 getDayInput print [day22a, day22b]
+    run 23 getDayInput print [day23a, day23b]
 ```
