@@ -2,14 +2,14 @@
 Module:         Day23
 Description:    <http://adventofcode.com/2017/day/23 Day 23: Coprocessor Conflagration>
 -}
-{-# LANGUAGE LambdaCase, NamedFieldPuns, RecordWildCards, TypeApplications, ViewPatterns #-}
+{-# LANGUAGE LambdaCase, NamedFieldPuns, PatternGuards, RecordWildCards, TypeApplications, ViewPatterns #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day23 (day23a, day23b) where
 
-import Data.List (findIndices)
 import Data.Array.IArray (IArray, (!), (//), listArray)
 import Data.Array.Unboxed (UArray)
 import Data.Ix (Ix)
+import Data.List (findIndices)
 import Math.NumberTheory.Primes (isPrime)
 import Text.Read (readMaybe)
 
@@ -53,28 +53,32 @@ step ins state@State {..} = Just $ case ins !! pc of
     load = either (regs !) id
 
 -- | Evaluates the @f = 0 if !isPrime(b)@ sequence, or a single instruction.
-stepOptimized :: (IArray a imm, Integral imm) =>
-    [Ins Char imm] -> State a Char imm -> Maybe (State a Char imm)
+stepOptimized :: (IArray a imm, Ix reg, Integral imm) =>
+    [Ins reg imm] -> State a reg imm -> Maybe (State a reg imm)
 stepOptimized ins State {pc} | pc < 0 = Nothing
 stepOptimized ins state@State {..} = case drop pc ins of
-    ( Set 'd' (Right 2) :
-      Set 'e' (Right 2) :
-      Set 'g' (Left 'd') :
-      Mul 'g' (Left 'e') :
-      Sub 'g' (Left 'b') :
-      Jnz (Left 'g') (Right 2) :
-      Set 'f' (Right 0) :
-      Sub 'e' (Right (-1)) :
-      Set 'g' (Left 'e') :
-      Sub 'g' (Left 'b') :
-      Jnz (Left 'g') (Right (-8)) :
-      Sub 'd' (Right (-1)) :
-      Set 'g' (Left 'd') :
-      Sub 'g' (Left 'b') :
-      Jnz (Left 'g') (Right (-13)) :
-      _) -> Just . State (pc + 15) $ regs //
-            ( [ ('d', regs ! 'b'), ('e', regs ! 'b'), ('g', 0) ] ++
-              [('f', 0) | not . isPrime . fromIntegral $ regs ! 'b'] )
+    ( Set d (Right 2) :
+      Set e (Right 2) :
+      Set g (Left ((== d) -> True)) :
+      Mul ((== g) -> True) (Left ((== e) -> True)) :
+      Sub ((== g) -> True) b :
+      Jnz (Left ((== g) -> True)) (Right 2) :
+      Set f f0 :
+      Sub ((== e) -> True) (Right (-1)) :
+      Set ((== g) -> True) (Left ((== e) -> True)) :
+      Sub ((== g) -> True) ((== b) -> True) :
+      Jnz (Left ((== g) -> True)) (Right (-8)) :
+      Sub ((== d) -> True) (Right (-1)) :
+      Set ((== g) -> True) (Left ((== d) -> True)) :
+      Sub ((== g) -> True) ((== b) -> True) :
+      Jnz (Left ((== g) -> True)) (Right (-13)) : _)
+      | d /= e, d /= g, d /= f, e /= g, e /= f, g /= f
+      , either (not . (`elem` [d, e, g, f])) (const True) b
+      , either (not . (`elem` [d, e, g, f])) (const True) f0
+      , either Just (const Nothing) b /= either Just (const Nothing) f0 ->
+        let b' = either (regs !) id b in Just . State (pc + 15) $ regs //
+          ( [(d, b'), (e, b'), (g, 0)] ++
+            [(f, either (regs !) id f0) | not . isPrime $ fromIntegral b'] )
     _ -> step ins state
 
 -- | Iterates a function until 'Nothing'.
