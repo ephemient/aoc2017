@@ -337,10 +337,10 @@ module Day21
 transforms :: [[[a]] -> [[a]]]
 
 -- | Parse a list of enhancements.
-parse :: String -> Map [String] [String]
+parse :: String -> Map [[Bool]] [[Bool]]
 
 -- | The glider.
-start :: [String]
+start :: [[Bool]]
 
 -- | Expand sub-squares according to the rules map.
 step :: (Ord a) => Map [[a]] [[a]] -> [[a]] -> [[a]]
