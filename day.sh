@@ -42,6 +42,7 @@ import Data.Either
 import Data.Function
 import Data.Functor
 import Data.List
+import Data.List.Split
 import qualified Data.Map.Lazy as Map
 import Data.Maybe
 import Data.Monoid

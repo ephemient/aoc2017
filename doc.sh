@@ -11,6 +11,7 @@ while { read -r -d '' file; read -r -d '' path; }; do
     sha1=$(git hash-object -t blob -w --path "${path}" -- "${file}")
     printf '%s %s\t%s\0' "${mode}" "${sha1}" "${path}"
 done | git update-index -z --index-info
+git update-index --add -- aoc2017-bench.html
 tree=$(git write-tree)
 [[ ${tree} == $(git rev-parse refs/heads/gh-pages^{tree}) ]] ||
 git update-ref refs/heads/gh-pages "$(git commit-tree "${tree}" \
