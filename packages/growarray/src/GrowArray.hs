@@ -31,6 +31,7 @@ getBounds GrowArray {..} =
     (,) <$> readSTRefU growArrayMin <*> readSTRefU growArrayMax
 
 -- | Reads an element at an index. Returns the default value if unallocated.
+{-# INLINE readGrowArray #-}
 readGrowArray :: (Ix i, Prim i, V.Unbox e) => GrowArray s i e -> i -> ST s e
 readGrowArray arr@GrowArray {..} i = do
     bounds <- getBounds arr
@@ -39,6 +40,7 @@ readGrowArray arr@GrowArray {..} i = do
     else pure growArrayDef
 
 -- | Writes an element at an index, growing the underlying storage as needed.
+{-# INLINE writeGrowArray #-}
 writeGrowArray :: (FiniteBits i, Ix i, Num i, Prim i, V.Unbox e) =>
     GrowArray s i e -> i -> e -> ST s ()
 writeGrowArray arr@GrowArray {..} i e = do

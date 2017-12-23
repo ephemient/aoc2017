@@ -2,7 +2,6 @@
 Module:         Day22
 Description:    <http://adventofcode.com/2017/day/22 Day 22: Sporifica Virus>
 -}
-{-# LANGUAGE BangPatterns, TypeApplications #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day22 (day22a, day22b) where
 
@@ -50,18 +49,19 @@ parse s =
 day22 :: (Enum a, Eq a) =>
     a -> (a -> O -> O) -> (a -> a) -> a -> Int -> [Z] -> Int
 day22 infected turn mut def n input = runST $ do
-    grid <- newGrowArray @Word64 @Word8 (0, 0) . fromIntegral $ fromEnum def
-    let infected' = fromIntegral $ fromEnum infected
+    let def' = fromIntegral $ fromEnum def :: Word8
+        infected' = fromIntegral $ fromEnum infected
+    grid <- newGrowArray (0, 0) def'
     sequence_ [writeGrowArray grid z infected' | Z z <- input]
-    let loop 0 k _ _ = pure k
-        loop n !k dir pos = do
+    let loop 0 _ _ k = pure k
+        loop n dir pos k = do
             a <- toEnum . fromIntegral <$> readGrowArray grid (getZ pos)
             let a' = mut a
                 dir' = turn a dir
                 pos' = move dir' pos
             writeGrowArray grid (getZ pos) . fromIntegral $ fromEnum a'
-            loop (n - 1) (if a' == infected then k + 1 else k) dir' pos'
-    loop n 0 U $ toZ 0 0
+            loop (n - 1) dir' pos' $! if a' == infected then k + 1 else k
+    loop n U (toZ 0 0) 0
 
 day22a :: String -> Int
 day22a = day22 True (bool prev next) next False 10000 . parse
