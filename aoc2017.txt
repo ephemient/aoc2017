@@ -434,7 +434,7 @@ step :: (IArray a imm, Ix reg, Integral imm) => [Ins reg imm] -> State a reg imm
 
 -- | Evaluates the <tt>f = 0 if !isPrime(b)</tt> sequence, or a single
 --   instruction.
-stepOptimized :: (IArray a imm, Integral imm) => [Ins Char imm] -> State a Char imm -> Maybe (State a Char imm)
+stepOptimized :: (IArray a imm, Ix reg, Integral imm) => [Ins reg imm] -> State a reg imm -> Maybe (State a reg imm)
 
 -- | Iterates a function until <a>Nothing</a>.
 iterateMaybe :: (a -> Maybe a) -> Maybe a -> [a]
