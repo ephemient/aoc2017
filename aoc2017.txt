@@ -439,6 +439,23 @@ day23a :: String -> Int
 day23b :: String -> Int
 
 
+module Day24
+
+-- | Bidrectionally associates <tt>a =&gt; n =&gt; b</tt> and <tt>b =&gt; n
+--   =&gt; a</tt>, where <tt>n</tt> is an unique identifier for each
+--   <tt>a/b</tt> line.
+parse :: (Ord a, Read a) => String -> Map a (Map Int a)
+
+-- | Deletes a key from a <a>Map</a>, returning <a>Nothing</a> if it
+--   becomes empty.
+deleteOrNull :: (Ord k) => k -> Map k v -> Maybe (Map k v)
+
+-- | Explores all bridges.
+buildBridge :: (Num a, Ord a, Ord b, Semigroup s) => (a -> a -> s -> s) -> s -> a -> Map a (Map b a) -> s
+day24a :: String -> Int
+day24b :: String -> Int
+
+
 module Day3
 day3a :: Int -> Int
 day3b :: Int -> Int
