@@ -345,6 +345,9 @@ start :: [[Bool]]
 -- | Expand sub-squares according to the rules map.
 step :: (Ord a) => Map [[a]] [[a]] -> [[a]] -> [[a]]
 
+-- | Returns the same valeu for all transformations of the same block.
+canonicalize :: (Ord a) => [[a]] -> [[a]]
+
 -- | <tt>day21 n input</tt> returns the number of bits set in the
 --   <tt>n</tt>-th <a>step</a> of transforming the <a>start</a> glider
 --   using <a>parse</a> rules from <tt>input</tt>.
