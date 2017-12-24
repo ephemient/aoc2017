@@ -165,6 +165,10 @@ import Day22 (day22a, day22b)
 ```haskell
 import Day23 (day23a, day23b)
 ```
+## [Day 24: Electromagnetic Moat](/src/Day24.hs)
+```haskell
+import Day24 (day24a, day24b)
+```
 
 ---
 
@@ -221,4 +225,5 @@ main = do
     run 21 getDayInput print [day21a, day21b]
     run 22 getDayInput print [day22a, day22b]
     run 23 getDayInput print [day23a, day23b]
+    run 24 getDayInput print [day24a, day24b]
 ```
