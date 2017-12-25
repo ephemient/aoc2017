@@ -489,8 +489,10 @@ Program :: state -> Int -> Map (state, value) (Op state value) -> Program state 
 -- | Initial state of the Turing machine.
 [start] :: Program state value -> state
 
--- | Number of cycles to run the Turing machine. | State transitions.
+-- | Number of cycles to run the Turing machine.
 [steps] :: Program state value -> Int
+
+-- | State transitions.
 [transitions] :: Program state value -> Map (state, value) (Op state value)
 
 -- | Parses a description to a <a>Program</a>.
