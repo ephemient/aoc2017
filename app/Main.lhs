@@ -169,6 +169,10 @@ import Day23 (day23a, day23b)
 ```haskell
 import Day24 (day24a, day24b)
 ```
+## [Day 25: The Halting Problem](/src/Day25.hs)
+```haskell
+import Day25 (day25)
+```
 
 ---
 
@@ -226,4 +230,5 @@ main = do
     run 22 getDayInput print [day22a, day22b]
     run 23 getDayInput print [day23a, day23b]
     run 24 getDayInput print [day24a, day24b]
+    run 25 getDayInput print [day25]
 ```
