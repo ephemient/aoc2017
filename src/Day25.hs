@@ -2,15 +2,22 @@
 Module:         Day25
 Description:    <http://adventofcode.com/2017/day/25 Day 25: The Halting Problem>
 -}
-{-# LANGUAGE NamedFieldPuns, NoMonomorphismRestriction, RecordWildCards, TypeApplications, ViewPatterns #-}
+{-# LANGUAGE NoMonomorphismRestriction, RecordWildCards, TypeApplications #-}
 {-# OPTIONS_HADDOCK ignore-exports #-}
 module Day25 (day25) where
 
+import Control.Monad.ST (ST, runST)
+import Data.Bits (FiniteBits)
 import Data.Char (isSpace)
+import Data.Ix (Ix)
 import Data.List (uncons)
 import qualified Data.Map.Lazy as Map ((!), fromList)
 import Data.Map.Lazy (Map)
 import Data.Maybe (fromMaybe)
+import Data.Primitive (Prim)
+import qualified Data.Vector.Unboxed as V (Unbox)
+import Data.Word (Word8)
+import GrowArray (GrowArray, foldGrowArray, newGrowArray, readGrowArray, writeGrowArray)
 import Text.ParserCombinators.ReadP (ReadP, (<++), between, char, many1, readP_to_S, readS_to_P, sepBy, string)
 
 -- | A movement of the cursor of the Turing machine on its tape.
@@ -29,9 +36,6 @@ data Program state value = Program
     -- | State transitions.
   , transitions :: Map (state, value) (Op state value)
   }
-
--- | A cursor view of a Turing machine's tape.
-data Tape a = Tape {before :: [a], cur :: a, after :: [a]}
 
 -- | Parses a description to a 'Program'.
 parseProgram :: (Ord state, Read state, Ord value, Read value) =>
@@ -58,24 +62,19 @@ parseProgram = do
             pure ((state, value), Op {..})
     pure Program {..}
 
--- | Writes a value then moves the cursor.
-writeMoveTape :: (Num a) => a -> Move -> Tape a -> Tape a
-writeMoveTape new MoveLeft
-    Tape {before = (fromMaybe (0, []) . uncons -> (x, xs)), after = ys} =
-    Tape {before = xs, cur = x, after = new:ys}
-writeMoveTape new MoveRight
-    Tape {before = xs, after = (fromMaybe (0, []) . uncons -> (y, ys))} =
-    Tape {before = new:xs, cur = y, after = ys}
-
 -- | Performs a single state transition.
-step :: (Ord state, Num value, Ord value) =>
-    Map (state, value) (Op state value) ->
-    (state, Tape value) -> (state, Tape value)
-step transitions (state, tape) = (next, writeMoveTape write move tape) where
-    Op {..} = transitions Map.! (state, cur tape)
+step :: (Ord state, Num value, Ord value, V.Unbox value, FiniteBits pos, Num pos, Ix pos, Prim pos) =>
+    Map (state, value) (Op state value) -> GrowArray s pos value ->
+    (pos, state) -> ST s (pos, state)
+step transitions tape (pos, state) = do
+    val <- readGrowArray tape pos
+    let Op {..} = transitions Map.! (state, val)
+        pos' = case move of MoveLeft -> pos - 1; MoveRight -> pos + 1
+    (pos', next) <$ writeGrowArray tape pos write
 
 day25 :: String -> Int
-day25 input = sum before + cur + sum after where
-    (Program {..}, _):_ =
-        filter (all isSpace . snd) $ readP_to_S (parseProgram @State @Int) input
-    (_, Tape {..}) = iterate (step transitions) (start, Tape [] 0 []) !! steps
+day25 input = runST $ newGrowArray @Int (0, 0) 0 >>= loop steps (0, start) where
+    (Program {..}, _):_ = filter (all isSpace . snd) $
+                          readP_to_S (parseProgram @State @Word8) input
+    loop 0 _ tape = foldGrowArray (\a e -> pure $! a + fromIntegral e) 0 tape
+    loop n tm tape = step transitions tape tm >>= \tm -> loop (n - 1) tm tape

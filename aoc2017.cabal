@@ -29,7 +29,9 @@ library
                      , containers
                      , mtl
                      , parallel
+                     , primitive
                      , split
+                     , vector
   default-language:    Haskell2010
 
 executable aoc2017-exe

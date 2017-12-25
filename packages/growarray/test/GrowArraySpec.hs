@@ -2,10 +2,11 @@ module GrowArraySpec (spec) where
 
 import Control.Monad.ST (ST)
 import Data.Ix (range)
-import GrowArray (GrowArray, newGrowArray, readGrowArray, writeGrowArray)
+import Data.List (isInfixOf, replicate)
+import GrowArray (GrowArray, foldGrowArray, newGrowArray, readGrowArray, writeGrowArray)
 import Test.Hspec (Spec, describe, it)
 import Test.QuickCheck ((===), property)
-import Test.QuickCheck.Monadic (monadicST, pre, run)
+import Test.QuickCheck.Monadic (assert, monadicST, pre, run)
 
 spec :: Spec
 spec = do
@@ -31,6 +32,17 @@ spec = do
             run $ writeGrowArray arr (p n) x
             xs' <- run $ readArray arr $ range (lo, hi) ++ map p [n, m]
             pure $ xs ++ [x, def] === xs'
+    describe "fold" $
+        it "includes all" $ property $ \lo def xs n x -> monadicST $ do
+            pre $ not (null xs)
+            let top = lo + length xs
+                expected = if n < 0
+                           then x : replicate (- n - 1) def ++ xs
+                           else xs ++ replicate n def ++ [x]
+            arr <- run $ fillArray lo def xs
+            run $ writeGrowArray arr (if n < 0 then lo + n else top + n) x
+            actual <- run $ foldGrowArray (\xs x -> pure $ x:xs) [] arr
+            assert $ reverse expected `isInfixOf` actual
   where
     fillArray :: Int -> Char -> String -> ST s (GrowArray s Int Char)
     fillArray lo def xs = do
