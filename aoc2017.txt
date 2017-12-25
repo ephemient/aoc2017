@@ -493,21 +493,11 @@ Program :: state -> Int -> Map (state, value) (Op state value) -> Program state 
 [steps] :: Program state value -> Int
 [transitions] :: Program state value -> Map (state, value) (Op state value)
 
--- | A cursor view of a Turing machine's tape.
-data Tape a
-Tape :: [a] -> a -> [a] -> Tape a
-[before] :: Tape a -> [a]
-[cur] :: Tape a -> a
-[after] :: Tape a -> [a]
-
 -- | Parses a description to a <a>Program</a>.
 parseProgram :: (Ord state, Read state, Ord value, Read value) => ReadP (Program state value)
 
--- | Writes a value then moves the cursor.
-writeMoveTape :: (Num a) => a -> Move -> Tape a -> Tape a
-
 -- | Performs a single state transition.
-step :: (Ord state, Num value, Ord value) => Map (state, value) (Op state value) -> (state, Tape value) -> (state, Tape value)
+step :: (Ord state, Num value, Ord value, Unbox value, FiniteBits pos, Num pos, Ix pos, Prim pos) => Map (state, value) (Op state value) -> GrowArray s pos value -> (pos, state) -> ST s (pos, state)
 day25 :: String -> Int
 instance GHC.Read.Read Day25.State
 instance GHC.Classes.Ord Day25.State
