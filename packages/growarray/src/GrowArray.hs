@@ -63,7 +63,7 @@ writeGrowArray arr@GrowArray {..} i e = do
     writeSTRefU growArrayMax max
     writeSTRef growArrayVec new
 
--- | folds a function over all elements, potentially including default values at
+-- | Folds a function over all elements, potentially including default values at
 -- indices that were not explicitly allocated or written.
 {-# INLINE foldGrowArray #-}
 foldGrowArray :: (Prim i, V.Unbox e) =>

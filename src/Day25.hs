@@ -33,8 +33,7 @@ data Op state value = Op {write :: value, move :: Move, next :: state}
 data Program state value = Program
   { start :: state  -- ^ Initial state of the Turing machine.
   , steps :: Int    -- ^ Number of cycles to run the Turing machine.
-    -- | State transitions.
-  , transitions :: Map (state, value) (Op state value)
+  , transitions :: Map (state, value) (Op state value)  -- ^ State transitions.
   }
 
 -- | Parses a description to a 'Program'.
