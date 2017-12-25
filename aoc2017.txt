@@ -459,6 +459,61 @@ day24a :: String -> Int
 day24b :: String -> Int
 
 
+module Day25
+
+-- | A movement of the cursor of the Turing machine on its tape.
+data Move
+MoveLeft :: Move
+MoveRight :: Move
+
+-- | The state of the the Turing machine.
+data State
+A :: State
+B :: State
+C :: State
+D :: State
+E :: State
+F :: State
+
+-- | An operation to be performed by the Turing machine.
+data Op state value
+Op :: value -> Move -> state -> Op state value
+[write] :: Op state value -> value
+[move] :: Op state value -> Move
+[next] :: Op state value -> state
+
+-- | The setup for a run of a Turing machine.
+data Program state value
+Program :: state -> Int -> Map (state, value) (Op state value) -> Program state value
+
+-- | Initial state of the Turing machine.
+[start] :: Program state value -> state
+
+-- | Number of cycles to run the Turing machine. | State transitions.
+[steps] :: Program state value -> Int
+[transitions] :: Program state value -> Map (state, value) (Op state value)
+
+-- | A cursor view of a Turing machine's tape.
+data Tape a
+Tape :: [a] -> a -> [a] -> Tape a
+[before] :: Tape a -> [a]
+[cur] :: Tape a -> a
+[after] :: Tape a -> [a]
+
+-- | Parses a description to a <a>Program</a>.
+parseProgram :: (Ord state, Read state, Ord value, Read value) => ReadP (Program state value)
+
+-- | Writes a value then moves the cursor.
+writeMoveTape :: (Num a) => a -> Move -> Tape a -> Tape a
+
+-- | Performs a single state transition.
+step :: (Ord state, Num value, Ord value) => Map (state, value) (Op state value) -> (state, Tape value) -> (state, Tape value)
+day25 :: String -> Int
+instance GHC.Read.Read Day25.State
+instance GHC.Classes.Ord Day25.State
+instance GHC.Classes.Eq Day25.State
+
+
 module Day3
 day3a :: Int -> Int
 day3b :: Int -> Int
