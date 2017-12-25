@@ -33,8 +33,11 @@ buildBridge f k start parts = sconcat $ k :|
   [ buildBridge f (f start next k) next .
         Map.update (deleteOrNull n) start .
         Map.update (deleteOrNull n) next $ parts
-  | (n, next) <- Map.assocs $ Map.findWithDefault Map.empty start parts
-  ]
+  | (n, next) <- greedy $ Map.assocs $ Map.findWithDefault Map.empty start parts
+  ] where
+    greedy connections = case filter ((== start) . snd) connections of
+        [] -> connections
+        selfConnections -> selfConnections
 
 day24a :: String -> Int
 day24a = getMax . buildBridge toMax (Max 0) 0 . parse where
