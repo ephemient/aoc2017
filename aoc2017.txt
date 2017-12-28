@@ -461,11 +461,6 @@ day24b :: String -> Int
 
 module Day25
 
--- | A movement of the cursor of the Turing machine on its tape.
-data Move
-MoveLeft :: Move
-MoveRight :: Move
-
 -- | The state of the the Turing machine.
 data State
 A :: State
@@ -475,16 +470,9 @@ D :: State
 E :: State
 F :: State
 
--- | An operation to be performed by the Turing machine.
-data Op state value
-Op :: value -> Move -> state -> Op state value
-[write] :: Op state value -> value
-[move] :: Op state value -> Move
-[next] :: Op state value -> state
-
 -- | The setup for a run of a Turing machine.
 data Program state value
-Program :: state -> Int -> Map (state, value) (Op state value) -> Program state value
+Program :: state -> Int -> Table Array state value -> Program state value
 
 -- | Initial state of the Turing machine.
 [start] :: Program state value -> state
@@ -493,16 +481,14 @@ Program :: state -> Int -> Map (state, value) (Op state value) -> Program state 
 [steps] :: Program state value -> Int
 
 -- | State transitions.
-[transitions] :: Program state value -> Map (state, value) (Op state value)
+[table] :: Program state value -> Table Array state value
 
 -- | Parses a description to a <a>Program</a>.
-parseProgram :: (Ord state, Read state, Ord value, Read value) => ReadP (Program state value)
-
--- | Performs a single state transition.
-step :: (Ord state, Num value, Ord value, Unbox value, FiniteBits pos, Num pos, Ix pos, Prim pos) => Map (state, value) (Op state value) -> GrowArray s pos value -> (pos, state) -> ST s (pos, state)
-day25 :: String -> Int
+parseProgram :: (Ix state, Read state, Ix value, Num value, Read value) => ReadP (Program state value)
+day25 :: String -> IO Int
 instance GHC.Read.Read Day25.State
 instance GHC.Classes.Ord Day25.State
+instance GHC.Arr.Ix Day25.State
 instance GHC.Classes.Eq Day25.State
 
 
