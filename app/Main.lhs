@@ -230,5 +230,5 @@ main = do
     run 22 getDayInput print [day22a, day22b]
     run 23 getDayInput print [day23a, day23b]
     run 24 getDayInput print [day24a, day24b]
-    run 25 getDayInput print [day25]
+    run 25 getDayInput (>>= print) [day25]
 ```

@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances, NoMonomorphismRestriction, NondecreasingIndentation, RecordWildCards #-}
-module GrowArray (GrowArray, foldGrowArray, newGrowArray, readGrowArray, writeGrowArray) where
+module GrowArray (GrowArray, foldGrowArray, foldGrowArrayIO, newGrowArray, readGrowArray, writeGrowArray) where
 
-import Control.Monad.ST (ST)
+import Control.Monad.ST (RealWorld, ST, stToIO)
 import Data.Bits (FiniteBits, countLeadingZeros, finiteBitSize, shiftL)
 import Data.Ix (Ix, inRange, index, rangeSize)
 import Data.Primitive (Prim)
@@ -72,4 +72,15 @@ foldGrowArray f z arr@GrowArray{..} = do
     vec <- readSTRef growArrayVec
     let go i a = if i >= V.length vec then pure a else
                  V.unsafeRead vec i >>= f a >>= go (i + 1)
+    go 0 z
+
+-- | Folds a function over all elements, potentially including default values at
+-- indices that were not explicitly allocated or written, in the `IO` monad.
+{-# INLINE foldGrowArrayIO #-}
+foldGrowArrayIO :: (Prim i, V.Unbox e) =>
+    (a -> e -> IO a) -> a -> GrowArray RealWorld i e -> IO a
+foldGrowArrayIO f z arr@GrowArray{..} = do
+    vec <- stToIO $ readSTRef growArrayVec
+    let go i a = if i >= V.length vec then pure a else
+                 stToIO (V.unsafeRead vec i) >>= f a >>= go (i + 1)
     go 0 z

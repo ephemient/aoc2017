@@ -1,7 +1,7 @@
 module Day25Spec (spec) where
 
 import Day25 (day25)
-import Test.Hspec (Spec, describe, it, shouldBe)
+import Test.Hspec (Spec, describe, it, shouldReturn)
 
 example :: String
 example = unlines
@@ -30,4 +30,4 @@ example = unlines
   ]
 
 spec :: Spec
-spec = describe "part 1" $ it "examples" $ day25 example `shouldBe` 3
+spec = describe "part 1" $ it "examples" $ day25 example `shouldReturn` 3
