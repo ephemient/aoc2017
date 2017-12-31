@@ -10,6 +10,9 @@ library
                      , TuringMachine.Base
                      , TuringMachine.Generic
                      , TuringMachine.Internal
+  if os(linux) && arch(x86_64)
+    c-sources:           csrc/turingmachine.S
+    exposed-modules:     TuringMachine.X86_64
   build-depends:       base >=4.7 && <5
                      , growarray
                      , array
@@ -26,6 +29,20 @@ test-suite turingmachine-test
                      , turingmachine
                      , array
                      , hspec
-  other-modules:       TuringMachine.InternalSpec
+  other-modules:       TuringMachine.GenericSpec
+                     , TuringMachine.InternalSpec
+  if os(linux) && arch(x86_64)
+    other-modules:       TuringMachine.X86_64Spec
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+benchmark turingmachine-bench
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      bench
+  main-is:             Main.hs
+  build-depends:       base
+                     , turingmachine
+                     , array
+                     , criterion
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010

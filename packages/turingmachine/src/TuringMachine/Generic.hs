@@ -68,7 +68,6 @@ instance (Ix state, FiniteBits symbol, Integral symbol, Unbox symbol) =>
             stepTuringMachine' tm tape state >>=
             flip runTuringMachine' (steps - 1)
 
-{-# INLINE foldTape #-}
 foldTape :: (FiniteBits a, Unbox a) => (k -> a -> IO k) -> k -> Tape a -> IO k
 foldTape f z Tape {tapeData} = foldGrowArrayIO f z tapeData
 
